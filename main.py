@@ -31,8 +31,9 @@ def get_env_data_as_dict(path: str) -> dict:
 
 # LOAD ENV FILE
 env_file_switch={
-                "DEV":'./dev.env',
-                "PROD":'./prod.env',
+                "dev":'./dev.env',
+                "staging":'./staging.env',
+                #"prod": "./prod.env",
                 "REPO":'./repo.env',
 }
 
@@ -49,7 +50,7 @@ if ENVIRONMENT != "REPO":
 
     logger.info(f'Fetching environment public key for {ENVIRONMENT}')
     public_key= api.actions.get_environment_public_key(repoId, ENVIRONMENT)
-    for key,value in env_data.items(): 
+    for key,value in env_data.items():
         encrypted_value=encrypt(public_key.key,value)
         logger.info(f'Adding environment secret {key} for {ENVIRONMENT}')
         api.actions.create_or_update_environment_secret(repoId, ENVIRONMENT, key, encrypted_value, public_key.key_id)
@@ -57,8 +58,8 @@ if ENVIRONMENT != "REPO":
 else:
     logger.info(f'Adding repository secrets')
     public_key=api.actions.get_repo_public_key()
-    for key,value in env_data.items(): 
+    for key,value in env_data.items():
         encrypted_value=encrypt(public_key.key,value)
         logger.info(f'Adding repository secret {key}')
-        api.actions.create_or_update_repo_secret(key, encrypted_value, public_key.key_id)    
+        api.actions.create_or_update_repo_secret(key, encrypted_value, public_key.key_id)
         logger.info(f'Successfully added repository secret {key}')
