@@ -1,14 +1,17 @@
 #!/usr/bin/env bash
 
-skipped=('GOOGLE_CLOUD_CREDENTIALS', 'PUBSUB_CREDENTIALS', 'ONELOGIN_IDP_METADATA', 'RESTFORCE_PRIVATE_KEY')
-
+skipped=('GOOGLE_CLOUD_CREDENTIALS' 'PUBSUB_CREDENTIALS' 'ONELOGIN_IDP_METADATA' 'RESTFORCE_PRIVATE_KEY' 'PGHOST' 'PGUSER' 'PGPASSWORD')
 echo ""
 echo "Friendly reminder that:"
 for v in "${skipped[@]}"
 do
-   echo "- $v must be added manually as it contains JSON, line breaks, or other special characters"
+   echo "- $v must be added manually as it is known to contain JSON, XML, line breaks, private keys or other special characters"
 done
 echo ""
+
+# TBD what about about these:
+# - DATABASE_URL
+# - REDIS_URL
 
 ENVIRONMENT=${1:-dev}
 read -p "Push variables to Github environment ${ENVIRONMENT}?  Are you sure? " -n 1 -r

@@ -13,6 +13,8 @@ Note that these are the env vars that are known to be problematic as they contai
 - `ONELOGIN_IDP_METADATA`
 - `RESTFORCE_PRIVATE_KEY`
 
+See notes below and/or `get-problem-vars.sh` for possible help exporting these.
+
 ## Links
 
 - [Automate Adding Github Environments/Repository Secrets](https://articles.wesionary.team/automate-adding-github-environments-repository-secrets-64de7d1235e7)
