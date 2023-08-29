@@ -59,7 +59,7 @@ if ENVIRONMENT != "REPO":
             value = value.replace("'","")
             encrypted_value=encrypt(public_key.key,value)
             logger.info(f'Adding environment secret {key} for {ENVIRONMENT}')
-            # api.actions.create_or_update_environment_secret(repoId, ENVIRONMENT, key, encrypted_value, public_key.key_id)
+            api.actions.create_or_update_environment_secret(repoId, ENVIRONMENT, key, encrypted_value, public_key.key_id)
             logger.info(f'Successfully added environment secret {key} for {ENVIRONMENT}')
 else:
     logger.info(f'Adding repository secrets')
