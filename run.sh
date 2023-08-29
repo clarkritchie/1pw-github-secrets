@@ -2,10 +2,12 @@
 
 skipped=('GOOGLE_CLOUD_CREDENTIALS' 'PUBSUB_CREDENTIALS' 'ONELOGIN_IDP_METADATA' 'RESTFORCE_PRIVATE_KEY' 'PGHOST' 'PGUSER' 'PGPASSWORD')
 echo ""
-echo "Friendly reminder that:"
+echo "Friendly reminder that some env vars are maybe problematic as they are known to contain JSON, XML, line breaks, private keys or other special characters"
+echo "See the list hard coded in main.py"
+
 for v in "${skipped[@]}"
 do
-   echo "- $v must be added manually as it is known to contain JSON, XML, line breaks, private keys or other special characters"
+   echo "- $v"
 done
 echo ""
 

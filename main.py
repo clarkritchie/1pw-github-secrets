@@ -11,6 +11,7 @@ GITHUB_ACCESS_TOKEN = os.getenv('GITHUB_ACCESS_TOKEN')
 GITHUB_REPO_OWNER = os.getenv('GITHUB_REPO_OWNER')
 GITHUB_REPO = os.getenv('GITHUB_REPO')
 ENVIRONMENT = os.getenv('ENVIRONMENT')
+VARS_TO_SKIP = ['PGUSER','PGPASSWORD','PGHOST','REDIS_URL','DATABASE_URL','GOOGLE_CLOUD_CREDENTIALS','PUBSUB_CREDENTIALS','ONELOGIN_IDP_METADATA','RESTFORCE_PRIVATE_KEY']
 
 api = GhApi(owner=GITHUB_REPO_OWNER, repo=GITHUB_REPO, token=GITHUB_ACCESS_TOKEN)
 
@@ -33,7 +34,7 @@ def get_env_data_as_dict(path: str) -> dict:
 env_file_switch={
                 "dev":'./dev.env',
                 "staging":'./staging.env',
-                #"prod": "./prod.env",
+                "prod": "./prod.env",
                 "REPO":'./repo.env',
 }
 
@@ -51,10 +52,15 @@ if ENVIRONMENT != "REPO":
     logger.info(f'Fetching environment public key for {ENVIRONMENT}')
     public_key= api.actions.get_environment_public_key(repoId, ENVIRONMENT)
     for key,value in env_data.items():
-        encrypted_value=encrypt(public_key.key,value)
-        logger.info(f'Adding environment secret {key} for {ENVIRONMENT}')
-        api.actions.create_or_update_environment_secret(repoId, ENVIRONMENT, key, encrypted_value, public_key.key_id)
-        logger.info(f'Successfully added environment secret {key} for {ENVIRONMENT}')
+        if key in VARS_TO_SKIP:
+            logger.info(f'{key} is in list of variables to skip, ignoring...')
+        else:
+            # TODO this may be problematic, remove the leading or trailing ' or ""
+            value = value.replace("'","")
+            encrypted_value=encrypt(public_key.key,value)
+            logger.info(f'Adding environment secret {key} for {ENVIRONMENT}')
+            # api.actions.create_or_update_environment_secret(repoId, ENVIRONMENT, key, encrypted_value, public_key.key_id)
+            logger.info(f'Successfully added environment secret {key} for {ENVIRONMENT}')
 else:
     logger.info(f'Adding repository secrets')
     public_key=api.actions.get_repo_public_key()
