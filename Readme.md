@@ -12,6 +12,7 @@ Note also that these are the env vars that are known to be problematic as they c
 - `PUBSUB_CREDENTIALS`
 - `ONELOGIN_IDP_METADATA`
 - `RESTFORCE_PRIVATE_KEY`
+- There are more...
 
 See notes below and/or `get-problem-vars.sh` for possible help exporting these.  (This script may not be in a runnable state, but should be close enough to be useful.)
 
@@ -20,12 +21,16 @@ See notes below and/or `get-problem-vars.sh` for possible help exporting these. 
 - [Automate Adding Github Environments/Repository Secrets](https://articles.wesionary.team/automate-adding-github-environments-repository-secrets-64de7d1235e7)
 - [Original code](https://github.com/n3rdkid/medium-github-secrets/)
 
+## Limits
+
+GitHub seems to have an upper limit of 100 environment secrets.
 
 ## Heroku Misc
 
 Any potentially useful tips and tricks for exporting known problem env vars from Heroku are noted below.
 
 ### GOOGLE_CLOUD_CREDENTIALS
+
 - JSON
 ```
 heroku config:get GOOGLE_CLOUD_CREDENTIALS --json -a blueboard-staging | tr -d '\n' | sed 's/\\n/ /g'
