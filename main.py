@@ -14,8 +14,11 @@ GITHUB_ACCESS_TOKEN = os.getenv('GITHUB_ACCESS_TOKEN')
 GITHUB_REPO_OWNER = os.getenv('GITHUB_REPO_OWNER')
 GITHUB_REPO = os.getenv('GITHUB_REPO')
 ENVIRONMENT = os.getenv('ENVIRONMENT')
+
+# these are special, problematic, etc.
 # 'PGUSER','PGPASSWORD','PGHOST',
-VARS_TO_SKIP = ['REDIS_URL','DATABASE_URL','GOOGLE_CLOUD_CREDENTIALS','PUBSUB_CREDENTIALS','ONELOGIN_IDP_METADATA','RESTFORCE_PRIVATE_KEY']
+# 'PUBSUB_CREDENTIALS','ONELOGIN_IDP_METADATA','RESTFORCE_PRIVATE_KEY
+VARS_TO_SKIP = ['']
 
 api = GhApi(owner=GITHUB_REPO_OWNER, repo=GITHUB_REPO, token=GITHUB_ACCESS_TOKEN)
 
@@ -35,15 +38,20 @@ def get_env_data_as_dict(path: str) -> dict:
             in f.readlines() if not line.startswith('#'))
 
 # LOAD ENV FILE
-env_file_switch={
-    "dev": "./dev.env",
-    "staging": "./staging.env",
-    "prod": "./prod.env",
-    "REPO": "./repo.env"
-}
+# env_file_switch={
+#     "dev": "./dev.env",
+#     "staging": "./staging.env",
+#     "prod": "./prod.env",
+#     "REPO": "./repo.env",
+#     "dev-shared": "./dev-shared.env",
+#     "staging-shared": "./staging-shared.env",
+#     "prod-shared": "./prod-shared.env",
+# }
 
-env_file_path = env_file_switch[ENVIRONMENT]
+# env_file_path = env_file_switch[ENVIRONMENT]
 
+env_file_path = f"{GITHUB_REPO}-{ENVIRONMENT}.env"
+print(f"env_file_path is {env_file_path}")
 env_data = get_env_data_as_dict(env_file_path)
 
 print(dumps(env_data, indent=4))
@@ -74,7 +82,7 @@ if ENVIRONMENT != "REPO":
 
             try:
                 api.actions.create_or_update_environment_secret(repoId, ENVIRONMENT, key, encrypted_value, public_key.key_id)
-                logger.info(f'Successfully added environment secret {key} for {ENVIRONMENT}')
+                logger.info(f'Successfully added environment secret {key} for {ENVIRONMENT} in repo ${GITHUB_REPO}')
             except Exception as e:
                 logger.error(f'There was a problem with {key} for {ENVIRONMENT}')
                 print(e)
