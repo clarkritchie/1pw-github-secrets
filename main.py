@@ -1,5 +1,4 @@
 import os
-import traceback
 import sys
 from json import dumps
 from dotenv import load_dotenv
@@ -15,16 +14,22 @@ GITHUB_REPO_OWNER = os.getenv('GITHUB_REPO_OWNER')
 GITHUB_REPO = os.getenv('GITHUB_REPO')
 ENVIRONMENT = os.getenv('ENVIRONMENT')
 
-# these are special, problematic, etc.
-# 'PGUSER','PGPASSWORD','PGHOST',
-# 'PUBSUB_CREDENTIALS','ONELOGIN_IDP_METADATA','RESTFORCE_PRIVATE_KEY
+# these may be special or problematic variables we want to skip over
+# 'PGUSER','PGPASSWORD','PGHOST','PUBSUB_CREDENTIALS','ONELOGIN_IDP_METADATA','RESTFORCE_PRIVATE_KEY', etc.
 VARS_TO_SKIP = ['']
 
-api = GhApi(owner=GITHUB_REPO_OWNER, repo=GITHUB_REPO, token=GITHUB_ACCESS_TOKEN)
+if GITHUB_REPO != "organization":
+    print("Instantiating client with Repo API")
+    api = GhApi(owner=GITHUB_REPO_OWNER, repo=GITHUB_REPO, token=GITHUB_ACCESS_TOKEN)
+else:
+    print("Instantiating client with Organization API")
+    api = GhApi(token=GITHUB_ACCESS_TOKEN)
 
 # Function to encrypt our secret
 def encrypt(public_key: str, secret_value: str) -> str:
-    """Encrypt a Unicode string using the public key."""
+    """
+    Encrypt a Unicode string using the public key.
+    """
     public_key = public.PublicKey(public_key.encode("utf-8"), encoding.Base64Encoder())
     sealed_box = public.SealedBox(public_key)
     encrypted = sealed_box.encrypt(secret_value.encode("utf-8"))
@@ -33,31 +38,26 @@ def encrypt(public_key: str, secret_value: str) -> str:
 # Parse env file and convert data to dict
 def get_env_data_as_dict(path: str) -> dict:
     logger.info(f'Loading "{env_file_path}" to populate "{ENVIRONMENT}" environment')
-    with open(path, 'r') as f:
-       return dict(tuple(line.replace('\n', '').split('=')) for line
-            in f.readlines() if not line.startswith('#'))
-
-# LOAD ENV FILE
-# env_file_switch={
-#     "dev": "./dev.env",
-#     "staging": "./staging.env",
-#     "prod": "./prod.env",
-#     "REPO": "./repo.env",
-#     "dev-shared": "./dev-shared.env",
-#     "staging-shared": "./staging-shared.env",
-#     "prod-shared": "./prod-shared.env",
-# }
-
-# env_file_path = env_file_switch[ENVIRONMENT]
+    key_value_dict = {}
+    with open(path, 'r') as file:
+        for line in file:
+            if not line.startswith('#'):
+                # Split the line into key and value using the first '=' as the delimiter
+                key, value = line.strip().split('=',1)
+                key = key.strip()
+                value = value.strip()
+                key_value_dict[key] = value
+        return key_value_dict
 
 env_file_path = f"{GITHUB_REPO}-{ENVIRONMENT}.env"
 print(f"env_file_path is {env_file_path}")
+
 env_data = get_env_data_as_dict(env_file_path)
 
+logger.info(f'Keys and values from file:')
 print(dumps(env_data, indent=4))
-# sys.exit(0)
 
-if ENVIRONMENT != "REPO":
+if ENVIRONMENT in ["dev","staging","prod"]:
     logger.info(f'Fetching repository information for {GITHUB_REPO}')
     repoId = api.repos.get().id
     logger.info(f'Creating/Updating new environment {ENVIRONMENT}')
@@ -74,7 +74,7 @@ if ENVIRONMENT != "REPO":
             value = value.replace("'","")
             encrypted_value=encrypt(public_key.key,value)
             logger.info(f'Adding environment secret {key} for {ENVIRONMENT}')
-            # logger.info(f' - repoId {repoId}')
+            # logger.debug(f' - repoId {repoId}')
             # logger.info(f' - ENVIRONMENT {ENVIRONMENT}')
             # logger.info(f' - key {key}')
             # logger.info(f' - encrypted_value {encrypted_value}')
@@ -85,15 +85,34 @@ if ENVIRONMENT != "REPO":
                 logger.info(f'Successfully added environment secret {key} for {ENVIRONMENT} in repo ${GITHUB_REPO}')
             except Exception as e:
                 logger.error(f'There was a problem with {key} for {ENVIRONMENT}')
-                print(e)
-                # traceback.print_exc()
+                print(f"An error occurred: {str(e)}")
                 sys.exit(1)
 
 else:
-    logger.info(f'Adding repository secrets')
-    public_key=api.actions.get_repo_public_key()
+    public_key=api.actions.get_org_public_key(GITHUB_REPO_OWNER)
     for key,value in env_data.items():
         encrypted_value=encrypt(public_key.key,value)
-        logger.info(f'Adding repository secret {key}')
-        api.actions.create_or_update_repo_secret(key, encrypted_value, public_key.key_id)
-        logger.info(f'Successfully added repository secret {key}')
+        logger.info(f'Adding organization secret {key}')
+        logger.info(f' - GITHUB_REPO_OWNER {GITHUB_REPO_OWNER}')
+        logger.info(f' - key {key}')
+        logger.info(f' - encrypted_value {encrypted_value}')
+        logger.info(f' - public_key.key_id {public_key.key_id}')
+        try:
+            api.actions.create_or_update_org_secret(
+                org=GITHUB_REPO_OWNER,
+                secret_name=key,
+                encrypted_value=encrypted_value,
+                key_id=public_key.key_id,
+                visibility='private'
+            )
+            logger.info(f'Successfully added organization secret {key}')
+        except Exception as e:
+            logger.error(f'There was a problem with {key}')
+            print(f"An error occurred: {str(e)}")
+            sys.exit(1)
+
+# Docs:
+# https://hexdocs.pm/oapi_github/GitHub.Actions.html#create_or_update_org_secret/4
+#
+# API for repoistory secrets:
+# api.actions.create_or_update_repo_secret(key, encrypted_value, public_key.key_id)

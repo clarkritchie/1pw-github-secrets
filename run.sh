@@ -10,7 +10,7 @@ echo "       ./run.sh blueboard staging -- create the destagingv environment in 
 echo ""
 
 PS3="Select your repo: "
-select repo in blueboard docker other quit
+select repo in blueboard docker milestones-api ado_api organization quit
 do
     case $repo in
         "blueboard")
@@ -19,8 +19,14 @@ do
         "docker-shared")
             export GITHUB_REPO="docker-shared"
             break;;
-        "other")
-            export GITHUB_REPO="foo"
+        "milestones-api")
+            export GITHUB_REPO="milestones-api"
+            break;;
+        "ado_api")
+            export GITHUB_REPO="ado_api"
+            break;;
+        "organization")
+            export GITHUB_REPO="organization"
             break;;
         "quit")
             echo "Goodbye..."
@@ -31,7 +37,7 @@ do
 done
 
 PS3="Select your env: "
-select env in dev staging prod
+select env in dev staging prod organization
 do
     case $env in
         "prod")
@@ -39,6 +45,9 @@ do
             break;;
         "staging")
             export ENVIRONMENT="staging"
+            break;;
+        "organization")
+            export ENVIRONMENT="secrets"
             break;;
         *)
             export ENVIRONMENT="dev"
