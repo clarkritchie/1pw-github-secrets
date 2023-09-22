@@ -36,10 +36,17 @@ Note that GitHub seems to have an upper limit of 100 environment secrets.
 
 - See `VARS_TO_SKIP` if there are variables to outright omit.
 - Use `base64` to encode complex variables, such as certificates, private keys, etc.
+- You may -- or you may NOT -- need to use single quotes around the value, you'll have to experiment
+
+Decoding `base64` as such:
+
+```
+echo ${{ secrets.SOME_SECRET_B64 }} | base64 --decode > foo.txt
+```
 
 ## GitHub PAT
 
-Your GitHub personal access token needs Read and Write access to:
+Your GitHub PAT (personal access token) needs Read and Write access to:
 
 - administration
 - environments
