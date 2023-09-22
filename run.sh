@@ -7,10 +7,6 @@ echo " - These can be ignored -- see the array VARS_TO_SKIP in main.py"
 echo " - SSH keys, certificates, private keys, should be base64 encoded"
 echo ""
 
-echo "Usage: ./run.sh docker-shared dev -- create the dev environment in the docker-shared project using docker-shared-dev.env config file"
-echo "       ./run.sh blueboard staging -- create the destagingv environment in theblueboard repo using blueboard-staging.env config file"
-echo ""
-
 PS3="Select the repo to target or choose organizaiton: "
 select repo in blueboard docker-shared milestones-api ado_api organization quit
 do
