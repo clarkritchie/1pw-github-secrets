@@ -8,7 +8,36 @@ It was originally written by @n3rdkid (see link below) but has been highly custo
 
 Because GitHub Secrets are encrypted, the workflow here is presently very dangerous.  A secret set by person A could be inadvertently overwritten by person B as there is not a good canonical source for `.env` files.
 
+## Configuration
+
+env files are in the form:
+```
+# this is a cool var
+FOO=bar
+...
+```
+
+Create a file named `git.env` as such:
+```
+GITHUB_ACCESS_TOKEN=<your token>
+GITHUB_REPO_OWNER=blueboard
+ENVIRONMENT=DEV
+```
+
+The names of the env files follow a convention.
+
+- To create sercrets in the "dev" environment in the "milestones-api" repository, the env file would be named `milestones-api-dev.env`.
+- To create organization sercrets in the "blueboard" organization, the env file would be named `organization-secrets.env`.
+- To create repository sercrets in the "blueboard" repository, the env file would be named `blueboard-repo.env`.
+
 Note that GitHub seems to have an upper limit of 100 environment secrets.
+
+## A Note about Special Variables
+
+- See `VARS_TO_SKIP` if there are variables to outright omit.
+- Use `base64` to encode complex variables, such as certificates, private keys, etc.
+
+## GitHub PAT
 
 Your GitHub personal access token needs Read and Write access to:
 
