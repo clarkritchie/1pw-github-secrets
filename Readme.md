@@ -48,7 +48,29 @@ Your GitHub personal access token needs Read and Write access to:
 
 More documentation is needed here!
 
-See `./run.sh` for usage.
+## Usage
+
+In this example, we're going to push secrets to the "staging" environment in the "blueboard" Git repository using the contents in the file `blueboard-staging.env`.
+
+```
+❯ ./run.sh                                                                                                                                                                                                                              set-github-secrets-venv
+
+Remember, some env vars are maybe problematic as they are known to contain JSON, XML, line breaks or other special characters
+
+ - These can be ignored -- see the array VARS_TO_SKIP in main.py
+ - SSH keys, certificates, private keys, should be base64 encoded
+
+1) blueboard	   3) milestones-api  5) organization
+2) docker-shared   4) ado_api	      6) quit
+
+Select the repo to target or choose organizaiton: 1
+
+1) dev		 3) prod	  5) organization
+2) staging	 4) repo
+Select an environment, or create a repo or organization secret: 2
+
+Push variables to Github from the file blueboard-staging.env now?  Are you sure?
+```
 
 ## Links
 
