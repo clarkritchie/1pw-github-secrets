@@ -1,4 +1,4 @@
-# Seet Github Secrets
+# Set Github Secrets
 
 This is a Python script to create GitHub environment, repo and organization secrets from a `.env` file.
 
