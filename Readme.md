@@ -8,7 +8,6 @@ It was originally written by @n3rdkid (see link below) but has been highly custo
 
 Because GitHub Secrets are encrypted, the workflow here is presently very dangerous.  A secret set by person A could be inadvertently overwritten by person B as there is not a good canonical source for `.env` files.
 
-<<<<<<< HEAD
 ## Configuration
 
 env files are in the form:
@@ -31,8 +30,6 @@ The names of the env files follow a convention.
 - To create organization sercrets in the "blueboard" organization, the env file would be named `organization-secrets.env`.
 - To create repository sercrets in the "blueboard" repository, the env file would be named `blueboard-repo.env`.
 
-=======
->>>>>>> 410c4ae (Update Readme.md)
 Note that GitHub seems to have an upper limit of 100 environment secrets.
 
 ## A Note about Special Variables
@@ -51,7 +48,7 @@ Your GitHub personal access token needs Read and Write access to:
 
 More documentation is needed here!
 
-## Usage
+## Usage Example
 
 In this example, we're going to push secrets to the "staging" environment in the "blueboard" Git repository using the contents in the file `blueboard-staging.env`.
 
