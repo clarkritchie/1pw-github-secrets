@@ -2,11 +2,11 @@
 
 This is a Python script to create GitHub environment, repo and organization secrets from a `.env` file.
 
-:safety_vest:
-
-Warning!  Because GitHub Secrets are encrypted, the workflow here is presently very dangerous.  Proceed with extreme caution!
-
 It was originally written by @n3rdkid (see link below) but has been highly customized for Blueboard's migration off of Heroku.
+
+## Warning!  Proceed with extreme caution!
+
+Because GitHub Secrets are encrypted, the workflow here is presently very dangerous.  A secret set by person A could be inadvertently overwritten by person B as there is not a good canonical source for `.env` files.
 
 Note that GitHub seems to have an upper limit of 100 environment secrets.
 
