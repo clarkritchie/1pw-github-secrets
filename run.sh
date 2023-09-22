@@ -1,16 +1,18 @@
 #!/usr/bin/env bash
 
 echo ""
-echo "Friendly reminder that some env vars are maybe problematic as they are known to contain JSON, XML, line breaks, private keys or other special characters"
-echo "See the list hard coded in main.py!!!]"
+echo "Remember, some env vars are maybe problematic as they are known to contain JSON, XML, line breaks or other special characters"
+echo ""
+echo " - These can be ignored -- see the array VARS_TO_SKIP in main.py"
+echo " - SSH keys, certificates, private keys, should be base64 encoded"
 echo ""
 
 echo "Usage: ./run.sh docker-shared dev -- create the dev environment in the docker-shared project using docker-shared-dev.env config file"
 echo "       ./run.sh blueboard staging -- create the destagingv environment in theblueboard repo using blueboard-staging.env config file"
 echo ""
 
-PS3="Select your repo: "
-select repo in blueboard docker milestones-api ado_api organization quit
+PS3="Select the repo to target or choose organizaiton: "
+select repo in blueboard docker-shared milestones-api ado_api organization quit
 do
     case $repo in
         "blueboard")
@@ -36,8 +38,8 @@ do
     esac
 done
 
-PS3="Select your env: "
-select env in dev staging prod organization
+PS3="Select an environment, or create a repo or organization secret: "
+select env in dev staging prod repo organization
 do
     case $env in
         "prod")
@@ -45,6 +47,9 @@ do
             break;;
         "staging")
             export ENVIRONMENT="staging"
+            break;;
+        "repo")
+            export ENVIRONMENT="repo"
             break;;
         "organization")
             export ENVIRONMENT="secrets"
@@ -62,7 +67,7 @@ if [ ! -f ${FILE} ]; then
 fi
 
 echo ""
-read -p "Push variables to Github environment ${ENVIRONMENT} to the ${GITHUB_REPO} GitHub repo from the file ${FILE}?  Are you sure? " -n 1 -r
+read -p "Push variables to Github from the file ${FILE} now?  Are you sure? " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     # echo "Creating a virtual environment"

@@ -19,7 +19,7 @@ ENVIRONMENT = os.getenv('ENVIRONMENT')
 VARS_TO_SKIP = ['']
 
 if GITHUB_REPO != "organization":
-    print("Instantiating client with Repo API")
+    print(f"Instantiating client with {GITHUB_REPO} Repo API")
     api = GhApi(owner=GITHUB_REPO_OWNER, repo=GITHUB_REPO, token=GITHUB_ACCESS_TOKEN)
 else:
     print("Instantiating client with Organization API")
@@ -57,7 +57,30 @@ env_data = get_env_data_as_dict(env_file_path)
 logger.info(f'Keys and values from file:')
 print(dumps(env_data, indent=4))
 
-if ENVIRONMENT in ["dev","staging","prod"]:
+if ENVIRONMENT == "repo":
+    logger.info(f'Fetching repository information for {GITHUB_REPO}')
+    public_key = api.actions.get_repo_public_key()
+    for key,value in env_data.items():
+        if key in VARS_TO_SKIP:
+            logger.info(f'{key} is in list of variables to skip, ignoring...')
+        else:
+            # TODO this may be problematic, remove the leading or trailing ' or ""
+            value = value.replace("'","")
+            encrypted_value=encrypt(public_key.key, value)
+            logger.info(f'Adding repo secret {key} to {GITHUB_REPO}')
+            # logger.info(f' - key {key}')
+            # logger.info(f' - encrypted_value {encrypted_value}')
+            # logger.info(f' - public_key.key_id {public_key.key_id}')
+            try:
+                api.actions.create_or_update_repo_secret(key, encrypted_value, public_key.key_id)
+                logger.info(f'Successfully added repo secret {key} to repo ${GITHUB_REPO}')
+            except Exception as e:
+                logger.error(f'There was a problem with {key} with repo {GITHUB_REPO}')
+                print(f"An error occurred: {str(e)}")
+                sys.exit(1)
+
+
+elif ENVIRONMENT in ["dev","staging","prod"]:
     logger.info(f'Fetching repository information for {GITHUB_REPO}')
     repoId = api.repos.get().id
     logger.info(f'Creating/Updating new environment {ENVIRONMENT}')
@@ -81,7 +104,7 @@ if ENVIRONMENT in ["dev","staging","prod"]:
             # logger.info(f' - public_key.key_id {public_key.key_id}')
 
             try:
-                api.actions.create_or_update_environment_secret(repoId, ENVIRONMENT, key, encrypted_value, public_key.key_id)
+                # api.actions.create_or_update_environment_secret(repoId, ENVIRONMENT, key, encrypted_value, public_key.key_id)
                 logger.info(f'Successfully added environment secret {key} for {ENVIRONMENT} in repo ${GITHUB_REPO}')
             except Exception as e:
                 logger.error(f'There was a problem with {key} for {ENVIRONMENT}')
@@ -92,24 +115,27 @@ else:
     public_key=api.actions.get_org_public_key(GITHUB_REPO_OWNER)
     for key,value in env_data.items():
         encrypted_value=encrypt(public_key.key,value)
-        logger.info(f'Adding organization secret {key}')
-        logger.info(f' - GITHUB_REPO_OWNER {GITHUB_REPO_OWNER}')
-        logger.info(f' - key {key}')
-        logger.info(f' - encrypted_value {encrypted_value}')
-        logger.info(f' - public_key.key_id {public_key.key_id}')
-        try:
-            api.actions.create_or_update_org_secret(
-                org=GITHUB_REPO_OWNER,
-                secret_name=key,
-                encrypted_value=encrypted_value,
-                key_id=public_key.key_id,
-                visibility='private'
-            )
-            logger.info(f'Successfully added organization secret {key}')
-        except Exception as e:
-            logger.error(f'There was a problem with {key}')
-            print(f"An error occurred: {str(e)}")
-            sys.exit(1)
+        # logger.info(f'Adding organization secret {key}')
+        # logger.info(f' - GITHUB_REPO_OWNER {GITHUB_REPO_OWNER}')
+        # logger.info(f' - key {key}')
+        # logger.info(f' - encrypted_value {encrypted_value}')
+        # logger.info(f' - public_key.key_id {public_key.key_id}')
+        if key in VARS_TO_SKIP:
+            logger.info(f'{key} is in list of variables to skip, ignoring...')
+        else:
+            try:
+                api.actions.create_or_update_org_secret(
+                    org=GITHUB_REPO_OWNER,
+                    secret_name=key,
+                    encrypted_value=encrypted_value,
+                    key_id=public_key.key_id,
+                    visibility='private'
+                )
+                logger.info(f'Successfully added organization secret {key}')
+            except Exception as e:
+                logger.error(f'There was a problem with {key}')
+                print(f"An error occurred: {str(e)}")
+                sys.exit(1)
 
 # Docs:
 # https://hexdocs.pm/oapi_github/GitHub.Actions.html#create_or_update_org_secret/4
