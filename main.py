@@ -14,6 +14,10 @@ GITHUB_REPO_OWNER = os.getenv('GITHUB_REPO_OWNER')
 GITHUB_REPO = os.getenv('GITHUB_REPO')
 ENVIRONMENT = os.getenv('ENVIRONMENT')
 
+#
+# Full API:  https://github.com/fastai/ghapi/blob/master/50_fullapi.ipynb
+#
+
 # these may be special or problematic variables we want to skip over
 # 'PGUSER','PGPASSWORD','PGHOST','PUBSUB_CREDENTIALS','ONELOGIN_IDP_METADATA','RESTFORCE_PRIVATE_KEY', etc.
 VARS_TO_SKIP = ['']
@@ -57,6 +61,9 @@ env_data = get_env_data_as_dict(env_file_path)
 logger.info(f'Keys and values from file:')
 print(dumps(env_data, indent=4))
 
+#
+# Repository Secrets
+#
 if ENVIRONMENT == "repo":
     logger.info(f'Fetching repository information for {GITHUB_REPO}')
     public_key = api.actions.get_repo_public_key()
@@ -73,30 +80,33 @@ if ENVIRONMENT == "repo":
             # logger.info(f' - public_key.key_id {public_key.key_id}')
             try:
                 api.actions.create_or_update_repo_secret(key, encrypted_value, public_key.key_id)
-                logger.info(f'Successfully added repo secret {key} to repo ${GITHUB_REPO}')
+                logger.info(f'Successfully added repo secret {key} to repo {GITHUB_REPO}')
             except Exception as e:
                 logger.error(f'There was a problem with {key} with repo {GITHUB_REPO}')
                 print(f"An error occurred: {str(e)}")
                 sys.exit(1)
 
-
+#
+# Environment Secrets
+#
 elif ENVIRONMENT in ["dev","staging","prod"]:
     logger.info(f'Fetching repository information for {GITHUB_REPO}')
     repoId = api.repos.get().id
-    logger.info(f'Creating/Updating new environment {ENVIRONMENT}')
+    # logger.info(f'Creating/Updating new environment {ENVIRONMENT}')
     api.repos.create_or_update_environment(ENVIRONMENT)
     logger.info(f'Created/Updated environment {ENVIRONMENT}')
-
-    logger.info(f'Fetching environment public key for {ENVIRONMENT}')
+    # logger.info(f'Fetching environment public key for {ENVIRONMENT}')
     public_key= api.actions.get_environment_public_key(repoId, ENVIRONMENT)
+
     for key,value in env_data.items():
         if key in VARS_TO_SKIP:
             logger.info(f'{key} is in list of variables to skip, ignoring...')
         else:
+            print(f'loading key is {key}')
             # TODO this may be problematic, remove the leading or trailing ' or ""
             value = value.replace("'","")
             encrypted_value=encrypt(public_key.key,value)
-            logger.info(f'Adding environment secret {key} for {ENVIRONMENT}')
+            # logger.info(f'Adding environment secret {key} for {ENVIRONMENT}')
             # logger.debug(f' - repoId {repoId}')
             # logger.info(f' - ENVIRONMENT {ENVIRONMENT}')
             # logger.info(f' - key {key}')
@@ -104,13 +114,15 @@ elif ENVIRONMENT in ["dev","staging","prod"]:
             # logger.info(f' - public_key.key_id {public_key.key_id}')
 
             try:
-                # api.actions.create_or_update_environment_secret(repoId, ENVIRONMENT, key, encrypted_value, public_key.key_id)
-                logger.info(f'Successfully added environment secret {key} for {ENVIRONMENT} in repo ${GITHUB_REPO}')
+                api.actions.create_or_update_environment_secret(repoId, ENVIRONMENT, key, encrypted_value, public_key.key_id)
+                logger.info(f'Successfully added environment secret {key} for {ENVIRONMENT} in repo {GITHUB_REPO}')
             except Exception as e:
                 logger.error(f'There was a problem with {key} for {ENVIRONMENT}')
                 print(f"An error occurred: {str(e)}")
                 sys.exit(1)
-
+#
+# Organization Secrets
+#
 else:
     public_key=api.actions.get_org_public_key(GITHUB_REPO_OWNER)
     for key,value in env_data.items():
@@ -137,8 +149,6 @@ else:
                 print(f"An error occurred: {str(e)}")
                 sys.exit(1)
 
-# Docs:
-# https://hexdocs.pm/oapi_github/GitHub.Actions.html#create_or_update_org_secret/4
-#
-# API for repoistory secrets:
-# api.actions.create_or_update_repo_secret(key, encrypted_value, public_key.key_id)
+# there is no Python method for setting environment variables???
+if ENVIRONMENT == "prod":
+    logger.info(f'*** REMEMBER TO SET REPLICAS VARIABLE ***')

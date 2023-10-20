@@ -8,7 +8,7 @@ echo " - SSH keys, certificates, private keys, should be base64 encoded"
 echo ""
 
 PS3="Select the repo to target or choose organizaiton: "
-select repo in blueboard docker-shared milestones-api ado_api organization quit
+select repo in blueboard docker-shared milestones-api ado_api survey_api organization quit
 do
     case $repo in
         "blueboard")
@@ -22,6 +22,9 @@ do
             break;;
         "ado_api")
             export GITHUB_REPO="ado_api"
+            break;;
+        "survey_api")
+            export GITHUB_REPO="survey_api"
             break;;
         "organization")
             export GITHUB_REPO="organization"
@@ -63,7 +66,7 @@ if [ ! -f ${FILE} ]; then
 fi
 
 echo ""
-read -p "Push variables to Github from the file ${FILE} now?  Are you sure? " -n 1 -r
+read -p "Push variables to Github from the file ${FILE} now?  Are you sure?  Press Y to confirm. " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     # echo "Creating a virtual environment"

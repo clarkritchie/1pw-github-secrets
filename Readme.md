@@ -8,6 +8,8 @@ It was originally written by @n3rdkid (see link below) but has been highly custo
 
 Because GitHub Secrets are encrypted, the workflow here is presently very dangerous.  A secret set by person A could be inadvertently overwritten by person B as there is not a good canonical source for `.env` files.
 
+And please DO NOT COMMIT YOUR .ENV FILES TO GITHUB!
+
 ## Configuration
 
 env files are in the form:
@@ -60,28 +62,34 @@ More documentation is needed here!
 In this example, we're going to push secrets to the "staging" environment in the "blueboard" Git repository using the contents in the file `blueboard-staging.env`.
 
 ```
-❯ ./run.sh                                                                                                                                                                                                                              set-github-secrets-venv
+❯ ./run.sh                                                                                                                                                                                                                                              25s
 
 Remember, some env vars are maybe problematic as they are known to contain JSON, XML, line breaks or other special characters
 
  - These can be ignored -- see the array VARS_TO_SKIP in main.py
  - SSH keys, certificates, private keys, should be base64 encoded
 
+<<<<<<< HEAD
 1) blueboard   3) milestones-api  5) organization
 2) docker-shared   4) ado_api	        6) quit
 
 Select the repo to target or choose organizaiton: 1
 
 1) dev		3) prod	  5) organization
-2) staging	 4) repo
+=======
+1) blueboard	   3) milestones-api  5) organization
+2) docker-shared   4) ado_api	      6) quit
+Select the repo to target or choose organizaiton: 1
 
+1) dev		 3) prod	  5) organization
+>>>>>>> e4a7b06 (misc this and that)
+2) staging	 4) repo
 Select an environment, or create a repo or organization secret: 2
 
-Push variables to Github from the file blueboard-staging.env now?  Are you sure?
+Push variables to Github from the file blueboard-staging.env now?  Are you sure?  Press Y to confirm.
 ```
 
 ## Links
 
 - [Automate Adding Github Environments/Repository Secrets](https://articles.wesionary.team/automate-adding-github-environments-repository-secrets-64de7d1235e7)
 - [Original code](https://github.com/n3rdkid/medium-github-secrets/)
-
