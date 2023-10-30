@@ -86,7 +86,7 @@ If successful, that file is then passed to `main.py` which sets the values in Gi
 
 ## Caveats
 
-Caveat 1 -- Error handling (if any) is likely poor, i.e. if `ado_api-dev.env` does not exist.
+Caveat 1 -- Error handling (if any) is likely poor.  In the example above, how graceful this handles things if, for example, the file `ado_api-dev.env` does not exist in 1Password, or if the user lacks permissions to view it, etc.
 
 Caveat 2 -- Secrets are written or or updated, but they are not removed.
 
