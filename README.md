@@ -84,4 +84,29 @@ In this example, by selecting option 4 (`ado_api`) then option 1 (`dev`), the sc
 
 If successful, that file is then passed to `main.py` which sets the values in GitHub.
 
-Error handling (if any) is likely poor, i.e. if `ado_api-dev.env` does not exist.
+## Caveats
+
+Caveat 1 -- Error handling (if any) is likely poor, i.e. if `ado_api-dev.env` does not exist.
+
+Caveat 2 -- Secrets are written or or updated, but they are not removed.
+
+e.g. if you set:
+```
+FOO=foo
+BAR=bar
+```
+
+Then you set:
+```
+FOO=bar
+COW=cow
+```
+
+You will end up with:
+```
+FOO=bar
+BAR=bar
+COW=cow
+```
+
+To workaround this, just fully delete an environment in GitHub then re-create it from scratch.
