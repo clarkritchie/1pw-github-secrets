@@ -102,7 +102,7 @@ FOO=bar
 COW=cow
 ```
 
-You will end up with:
+You will end up with this -- e.g. `FOO` was updated, `COW` was added, and `BAR` was left as-is:
 ```
 FOO=bar
 BAR=bar
