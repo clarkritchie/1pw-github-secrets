@@ -110,3 +110,5 @@ COW=cow
 ```
 
 To workaround this, just fully delete an environment in GitHub then re-create it from scratch.
+
+Caveat 3 -- Long strings, JSON, YAML, SSL certificats, things with carriage returns, etc. should be Base64 encoded.
