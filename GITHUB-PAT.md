@@ -1,10 +1,14 @@
-# GitHib PAT
+# GitHub GitHub Personal Access Token
 
-Go to your own GitHub settings page.
+The `git.env` file mentioned in README.md requires you to have  GitHub Personal Access Token (PAT) to interface with GitHub's API.
 
-Click Developer Settings, then Personal Access Tokens > Fine Grained Tokens.
+To create your PAT:
 
-Create a token with access to:
+1. Go to your own GitHub settings page.
+
+2. Click Developer Settings, then Personal Access Tokens > Fine Grained Tokens.
+
+3. Create a token with access to Blueboard and these repos:
 
 ```
 blueboard/blueboard
@@ -14,10 +18,13 @@ blueboard/docker-shared
 blueboard/survey_api
 blueboard/yass
 ...
+```
 
-- Repository permissions:  Read and Write access to organization administration and organization secrets
+The PAT will need:
 
-If you are a GitHub Admin and want to write Organization secrets, you'll also need:
+*Repository permissions* -- Read and Write access to organization administration and organization secrets
 
-- Organization permissions:  Read and Write access to administration, environments, and secrets
+If you are a GitHub Admin and want to write Organization secrets (the highest level), you'll also need:
+
+*Organization permissions* -- Read and Write access to administration, environments, and secrets
 
