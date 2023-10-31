@@ -8,16 +8,17 @@ tempfile() {
 cat <<-EOT
 
 Remember, some env vars are can be problematic -- specifically if they contain JSON,
-XML, have line breaks, are certificates, or have other special characters.
+XML, have line breaks, are certificates, and/or just have other special characters.
 
-A good workaround here is to simply Base64 encod the values when upload to GitHub secrets,
-name these as such: FOO_B64
+The best workaround here is to simply Base64 encode the values before you upload them
+as GitHub secrets.  Please name these with a _B64 suffix!  e.g. FOO_B64
 
-These can also be ignored, see the array VARS_TO_SKIP hard coded in main.py.
-
+These can also be ignored, see the array VARS_TO_SKIP array in main.py.
 EOT
 
-PS3="Select the repo to target or choose organizaiton: "
+echo ""
+PS3="Select the repo to use or choose organizaiton: "
+echo ""
 select repo in blueboard docker-shared milestones-api ado_api survey_api organization quit
 do
     case $repo in
@@ -41,14 +42,16 @@ do
             break;;
         "quit")
             echo "Goodbye..."
+            exit 0
             break;;
         *)
            echo "Entry was not recognized";;
     esac
 done
 
-PS3="Select an environment, or create a repo or organization secret: "
-select env in dev staging prod repo organization
+echo ""
+PS3="Select an environment (dev, staging, prod), or choose repository or organization secret: "
+select env in dev staging prod repository organization quit
 do
     case $env in
         "prod")
@@ -57,11 +60,15 @@ do
         "staging")
             export ENVIRONMENT="staging"
             break;;
-        "repo")
+        "repository")
             export ENVIRONMENT="repo"
             break;;
         "organization")
             export ENVIRONMENT="secrets"
+            break;;
+        "quit")
+            echo "Goodbye..."
+            exit 0
             break;;
         *)
             export ENVIRONMENT="dev"
@@ -73,45 +80,26 @@ done
 FILE=$(tempfile)
 trap 'rm -f ${FILE}' EXIT
 
-# syntax is:
-# op read op://set-github-secrets/ado_api-dev/ado_api-dev.env
-# echo "op://set-github-secrets/${GITHUB_REPO}-${ENVIRONMENT}/${GITHUB_REPO}-${ENVIRONMENT}.env"
-
-# Original code -- .env files on disk:
-# FILE=${GITHUB_REPO}-${ENVIRONMENT}.env
-# if [ ! -f ${FILE} ]; then
-#     echo "Environment file named \"${FILE}\" was not found!"
-#     exit 1
-# fi
-
-# Read the .env file from 1PW file
-# TODO come up with a naming convention here, names must be unique!
-# op read --out-file ${FILE} "op://set-github-secrets/${GITHUB_REPO}-${ENVIRONMENT}-file/${GITHUB_REPO}-${ENVIRONMENT}.env"
-# if [ ! -f ${FILE} ]; then
-#     echo "There was a problem, the environment file \"${FILE}\" was not created!"
-#     exit 1
-# fi
-
-# Read the .env file from 1PW note
-# TODO come up with a naming convention here, names must be unique!
-# since we're making a temp file, --force is here only to suppress the op
-# client from warning us that the file already exists
+# Read the 1PW note to a temporary file
+# Syntax is:
+#   op read op://set-github-secrets/ado_api-dev/ado_api-dev
+# 1PW docs:  https://developer.1password.com/docs/cli/reference/commands/read
+#
+# TODO come up with a naming convention here, names must be unique in a vault
+# Since we're making a temp file, --force is here only to suppress the op lient from warning us that
+# the file already exists
 op read --out-file ${FILE} --force "op://set-github-secrets/${GITHUB_REPO}-${ENVIRONMENT}/notesPlain"
 if [ ! -f ${FILE} ]; then
     echo "There was a problem, the environment file \"${FILE}\" was not created!"
     exit 1
 fi
 
+echo "Push the contents of ${FILE} to GitHub now, are you sure?  "
+read -p "Press Y to confirm, any other key to exit. " -n 1 -r
 echo ""
-read -p "Push variables to Github now?  Are you sure?  Press Y to confirm. " -n 1 -r
-echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
-    # echo "Creating a virtual environment"
     python3 -m venv venv
-    # echo "Activating the virtual environment"
     source ./venv/bin/activate
-    # echo "Installing requirements"
     pip3 install -r requirements.txt
-    # echo "Creating/Updating environments/repository secrets"
     ENVIRONMENT=${ENVIRONMENT} GITHUB_REPO=${GITHUB_REPO} python3 main.py
 fi
