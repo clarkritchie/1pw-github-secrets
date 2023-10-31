@@ -42,7 +42,7 @@ For more information or help:
 
 ### GitHub PAT
 
-1. Create a [GitHub PAT](GITHUB-PAT.md)
+1. Create a [GitHub Personal Access Token (PAT)](GITHUB-PAT.md)
 
 2. Create a `git.env` file at the root of this project:
 
