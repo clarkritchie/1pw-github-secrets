@@ -1,11 +1,16 @@
 #!/usr/bin/env bash
 
-echo ""
-echo "Remember, some env vars are maybe problematic as they are known to contain JSON, XML, line breaks or other special characters"
-echo ""
-echo " - These can be ignored -- see the array VARS_TO_SKIP in main.py"
-echo " - SSH keys, certificates, private keys, should be base64 encoded"
-echo ""
+cat <<-EOT
+
+Remember, some env vars are can be problematic -- specifically if they contain JSON,
+XML, have line breaks, are certificates, or have other special characters.
+
+A good workaround here is to simply Base64 encod the values when upload to GitHub secrets,
+name these as such: FOO_B64
+
+These can also be ignored, see the array VARS_TO_SKIP hard coded in main.py.
+
+EOT
 
 PS3="Select the repo to target or choose organizaiton: "
 select repo in blueboard docker-shared milestones-api ado_api survey_api organization quit
