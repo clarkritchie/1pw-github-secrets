@@ -1,6 +1,6 @@
-# GitHub GitHub Personal Access Token
+# GitHub Personal Access Token (PAT)
 
-The `git.env` file mentioned in README.md requires you to have  GitHub Personal Access Token (PAT) to interface with GitHub's API.
+The `git.env` file mentioned in README.md requires you to have a GitHub Personal Access Token (PAT) in order to interface with GitHub's API.
 
 To create your PAT:
 
