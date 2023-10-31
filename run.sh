@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+tempfile() {
+    tempprefix=$(basename "$0")
+    mktemp /tmp/${tempprefix}.XXXXXX
+}
+
 cat <<-EOT
 
 Remember, some env vars are can be problematic -- specifically if they contain JSON,
@@ -64,7 +69,9 @@ do
     esac
 done
 
-FILE=$(mktemp)
+# create a temporary file to save the contents from 1PW
+FILE=$(tempfile)
+trap 'rm -f ${FILE}' EXIT
 
 # syntax is:
 # op read op://set-github-secrets/ado_api-dev/ado_api-dev.env
@@ -87,12 +94,13 @@ FILE=$(mktemp)
 
 # Read the .env file from 1PW note
 # TODO come up with a naming convention here, names must be unique!
-op read --out-file ${FILE} "op://set-github-secrets/${GITHUB_REPO}-${ENVIRONMENT}/notesPlain"
+# since we're making a temp file, --force is here only to suppress the op
+# client from warning us that the file already exists
+op read --out-file ${FILE} --force "op://set-github-secrets/${GITHUB_REPO}-${ENVIRONMENT}/notesPlain"
 if [ ! -f ${FILE} ]; then
     echo "There was a problem, the environment file \"${FILE}\" was not created!"
     exit 1
 fi
-
 
 echo ""
 read -p "Push variables to Github now?  Are you sure?  Press Y to confirm. " -n 1 -r
