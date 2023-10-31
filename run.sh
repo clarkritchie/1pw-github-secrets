@@ -5,6 +5,17 @@ tempfile() {
     mktemp /tmp/${tempprefix}.XXXXXX
 }
 
+if [[ ! -f /opt/homebrew/bin/op || ! -f git.env ]]; then
+    cat <<-EOT
+
+1PW CLI line tools not found or git.env not in the current directory
+
+See README.md for setup instructions.
+
+EOT
+    exit 1
+fi
+
 cat <<-EOT
 This script retrieves env vars from 1PW notes and creates them as GitHub secrets.
 
