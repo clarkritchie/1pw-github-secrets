@@ -44,7 +44,7 @@ For more information or help:
 
 1. Create a [GitHub Personal Access Token (PAT)](GITHUB-PAT.md)
 
-2. Create a `git.env` file at the root of this project:
+2. Create a `git.env` file at the root of this project.  *Do not commit this to GitHub* (it should already be excluded by the `.gitignore`).
 
 ```
 GITHUB_ACCESS_TOKEN=github_pat_XXX
