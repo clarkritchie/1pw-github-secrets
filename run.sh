@@ -64,14 +64,28 @@ do
     esac
 done
 
-FILE=${GITHUB_REPO}-${ENVIRONMENT}.env
+FILE=$(mktemp)
+
+# syntax is:
+# op read op://set-github-secrets/ado_api-dev/ado_api-dev.env
+# echo "op://set-github-secrets/${GITHUB_REPO}-${ENVIRONMENT}/${GITHUB_REPO}-${ENVIRONMENT}.env"
+
+# read the .env file from 1PW
+op read --out-file ${FILE} "op://set-github-secrets/${GITHUB_REPO}-${ENVIRONMENT}/${GITHUB_REPO}-${ENVIRONMENT}.env"
 if [ ! -f ${FILE} ]; then
-    echo "Environment file named \"${FILE}\" was not found!"
+    echo "There was a problem, the environment file \"${FILE}\" was not created!"
     exit 1
 fi
 
+# Original code -- .env files on disk:
+# FILE=${GITHUB_REPO}-${ENVIRONMENT}.env
+# if [ ! -f ${FILE} ]; then
+#     echo "Environment file named \"${FILE}\" was not found!"
+#     exit 1
+# fi
+
 echo ""
-read -p "Push variables to Github from the file ${FILE} now?  Are you sure?  Press Y to confirm. " -n 1 -r
+read -p "Push variables to Github now?  Are you sure?  Press Y to confirm. " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     # echo "Creating a virtual environment"
