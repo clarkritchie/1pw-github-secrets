@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 tempfile() {
     tempprefix=$(basename "$0")
     mktemp /tmp/${tempprefix}.XXXXXX
@@ -32,9 +34,9 @@ These can also be ignored, see the array VARS_TO_SKIP array in main.py.
 EOT
 
 echo ""
-PS3="Select the repo to use or choose organizaiton: "
+PS3="Select the repo to use or choose organization: "
 echo ""
-select repo in blueboard docker-shared milestones-api ado_api survey_api organization quit
+select repo in blueboard docker-shared milestones-api ado_api survey_api yass organization quit
 do
     case $repo in
         "blueboard")
@@ -51,6 +53,9 @@ do
             break;;
         "survey_api")
             export GITHUB_REPO="survey_api"
+            break;;
+        "yass")
+            export GITHUB_REPO="yass"
             break;;
         "organization")
             export GITHUB_REPO="organization"
@@ -95,26 +100,32 @@ done
 FILE=$(tempfile)
 trap 'rm -f ${FILE}' EXIT
 
-# Read the 1PW note to a temporary file
-# Syntax is:
-#   op read op://set-github-secrets/ado_api-dev/ado_api-dev
+# Read the 1PW secure note into a temporary file
+#
+# The syntax is:
+#
+#   op read op://<VAULT>/<NOTE_TITLE>/notesPlain
+#
+# e.g.
+#   op read op://set-github-secrets/ado_api_dev/notesPlain
+#
 # 1PW docs:  https://developer.1password.com/docs/cli/reference/commands/read
 #
 # TODO come up with a naming convention here, names must be unique in a vault
 # Since we're making a temp file, --force is here only to suppress the op lient from warning us that
 # the file already exists
-op read --out-file ${FILE} --force "op://set-github-secrets/${GITHUB_REPO}-${ENVIRONMENT}/notesPlain"
+op read --out-file ${FILE} --force "op://set-github-secrets/${GITHUB_REPO}_${ENVIRONMENT}/notesPlain"
 if [ ! -f ${FILE} ]; then
     echo "There was a problem, the environment file \"${FILE}\" was not created!"
     exit 1
 fi
 
 echo "Push the contents of ${FILE} to GitHub now, are you sure?  "
-read -p "Press Y to confirm, any other key to exit. " -n 1 -r
+read -p "Press Y to confirm, any other key to exit " -n 1 -r
 echo ""
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     python3 -m venv venv
     source ./venv/bin/activate
     pip3 install -r requirements.txt
-    ENVIRONMENT=${ENVIRONMENT} GITHUB_REPO=${GITHUB_REPO} python3 main.py
+    ENVIRONMENT=${ENVIRONMENT} GITHUB_REPO=${GITHUB_REPO} ENV_FILE=${FILE} python3 main.py
 fi

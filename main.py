@@ -11,9 +11,11 @@ from nacl import encoding, public
 load_dotenv("./git.env")
 GITHUB_ACCESS_TOKEN = os.getenv('GITHUB_ACCESS_TOKEN')
 GITHUB_REPO_OWNER = os.getenv('GITHUB_REPO_OWNER')
-GITHUB_REPO = os.getenv('GITHUB_REPO')
-ENVIRONMENT = os.getenv('ENVIRONMENT')
 
+# these are passed in as env vars but are really sort of arugments
+GITHUB_REPO = os.getenv('GITHUB_REPO')#
+ENVIRONMENT = os.getenv('ENVIRONMENT')
+ENV_FILE = os.getenv('ENV_FILE')
 #
 # Full API:  https://github.com/fastai/ghapi/blob/master/50_fullapi.ipynb
 #
@@ -41,7 +43,7 @@ def encrypt(public_key: str, secret_value: str) -> str:
 
 # Parse env file and convert data to dict
 def get_env_data_as_dict(path: str) -> dict:
-    logger.info(f'Loading "{env_file_path}" to populate "{ENVIRONMENT}" environment')
+    logger.info(f'Loading "{ENV_FILE}" to populate "{ENVIRONMENT}" environment')
     key_value_dict = {}
     with open(path, 'r') as file:
         for line in file:
@@ -53,10 +55,8 @@ def get_env_data_as_dict(path: str) -> dict:
                 key_value_dict[key] = value
         return key_value_dict
 
-env_file_path = f"{GITHUB_REPO}-{ENVIRONMENT}.env"
-print(f"env_file_path is {env_file_path}")
-
-env_data = get_env_data_as_dict(env_file_path)
+print(f"ENV_FILE is {ENV_FILE}")
+env_data = get_env_data_as_dict(ENV_FILE)
 
 logger.info(f'Keys and values from file:')
 print(dumps(env_data, indent=4))

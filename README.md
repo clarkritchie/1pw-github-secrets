@@ -44,7 +44,7 @@ For more information or help:
 
 1. Create a [GitHub Personal Access Token (PAT)](GITHUB-PAT.md)
 
-2. Create a `git.env` file at the root of this project.  *Do not commit this to GitHub* (it should already be excluded by the `.gitignore`).
+2. Create a `git.env` file at the root of this project.  **This file should not be comitted to GitHub** (It should already be excluded by the `.gitignore`.)
 
 ```
 GITHUB_ACCESS_TOKEN=github_pat_XXX
@@ -78,13 +78,13 @@ Select the repository to push secrets into, or choose organizaiton: 4
 Select the ENVIRONMENT, or create a REPOSITORY or ORGANIZATION secret: 1
 ```
 
-In this example, by selecting option 4 (`ado_api`) then option 1 (`dev`), the script will try to fetch a file named `ado_api-dev.env` from the `set-github-secrets` vault in 1Password.
+In this example, by selecting option 4 (`ado_api`) then option 1 (`dev`), the script will try to fetch a secure note from the `set-github-secrets` vault in 1PW named in 1PW `ado_api_dev`.
 
 If successful, that file is then passed to `main.py` which sets the values in GitHub.
 
 ## Caveats
 
-Caveat 1 -- Error handling (if any) is likely poor.  In the example above, how graceful this handles things if, for example, the file `ado_api-dev.env` does not exist in 1Password, or if the user lacks permissions to view it, etc.
+Caveat 1 -- Error handling (if any) is likely poor.  In the example above, how graceful this handles things if, for example, the secure note `ado_api_dev` does not exist in 1Password, or if the user lacks permissions to access that vault, etc.
 
 Caveat 2 -- Secrets are written or or updated, but they are not removed.
 
