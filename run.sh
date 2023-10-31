@@ -6,12 +6,16 @@ tempfile() {
 }
 
 cat <<-EOT
+This script retrieves env vars from 1PW notes and creates them as GitHub secrets.
 
-Remember, some env vars are can be problematic -- specifically if they contain JSON,
-XML, have line breaks, are certificates, and/or just have other special characters.
+This workflow DOES NOT remove old values from GitHub!  That is important.
 
-The best workaround here is to simply Base64 encode the values before you upload them
-as GitHub secrets.  Please name these with a _B64 suffix!  e.g. FOO_B64
+1PW is our source of truth.
+
+Some env vars are can be problematic -- specifically if they contain JSON, XML, have
+line breaks, are certificates, and/or just have other special characters. The best
+workaround here is to simply Base64 encode the values before you upload them to
+GitHub.  Please name these with a _B64 suffix, e.g. FOO_B64.
 
 These can also be ignored, see the array VARS_TO_SKIP array in main.py.
 EOT
