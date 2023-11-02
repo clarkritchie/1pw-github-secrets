@@ -33,9 +33,10 @@ GitHub.  Please name these with a _B64 suffix, e.g. FOO_B64.
 These can also be ignored, see the array VARS_TO_SKIP array in main.py.
 EOT
 
-echo ""
-PS3="Select the repo to use or choose organization: "
-echo ""
+printf "\nSelect the GitHub repository to use, or choose organization.\n\n"
+PS3="
+Your choice: "
+
 select repo in blueboard docker-shared milestones-api ado_api survey_api yass organization quit
 do
     case $repo in
@@ -69,8 +70,10 @@ do
     esac
 done
 
-echo ""
-PS3="Select an environment (dev, staging, prod), or choose repository or organization secret: "
+printf "\nSelect the environment (dev, staging, prod) or create repository or organization secrets.\n\n"
+PS3="
+Your choice: "
+
 select env in dev staging prod repository organization quit
 do
     case $env in
@@ -114,14 +117,13 @@ trap 'rm -f ${FILE}' EXIT
 # TODO come up with a naming convention here, names must be unique in a vault
 # Since we're making a temp file, --force is here only to suppress the op lient from warning us that
 # the file already exists
-op read --out-file ${FILE} --force "op://set-github-secrets/${GITHUB_REPO}_${ENVIRONMENT}/notesPlain"
+op read --out-file ${FILE} --force "op://set-github-secrets/${GITHUB_REPO}_${ENVIRONMENT}/notesPlain" > /dev/null
 if [ ! -f ${FILE} ]; then
     echo "There was a problem, the environment file \"${FILE}\" was not created!"
     exit 1
 fi
 
-echo "Push the contents of ${FILE} to GitHub now, are you sure?  "
-read -p "Press Y to confirm, any other key to exit " -n 1 -r
+read -p "Push the contents of ${FILE} to GitHub now, are you sure?  Press Y to confirm. " -n 1 -r
 echo ""
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     python3 -m venv venv
