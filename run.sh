@@ -37,17 +37,17 @@ printf "\nSelect the GitHub repository to use, or choose organization.\n\n"
 PS3="
 Your choice: "
 
-select repo in blueboard docker-shared milestones-api ado_api survey_api yass organization quit
+select repo in blueboard docker_shared milestones_api ado_api survey_api yass organization quit
 do
     case $repo in
         "blueboard")
             export GITHUB_REPO="blueboard"
             break;;
-        "docker-shared")
-            export GITHUB_REPO="docker-shared"
+        "docker_shared")
+            export GITHUB_REPO="docker_shared"
             break;;
-        "milestones-api")
-            export GITHUB_REPO="milestones-api"
+        "milestones_api")
+            export GITHUB_REPO="milestones_api"
             break;;
         "ado_api")
             export GITHUB_REPO="ado_api"
