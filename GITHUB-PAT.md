@@ -8,7 +8,7 @@ To create your PAT:
 
 2. Click Developer Settings, then Personal Access Tokens > Fine Grained Tokens.
 
-3. Create a token with access to Blueboard and these repos:
+3. Create a token with access to Blueboard and whatever repos you need access to, e.g.
 
 ```
 blueboard/blueboard
@@ -22,9 +22,8 @@ blueboard/yass
 
 The PAT will need:
 
-*Repository permissions* -- Read and Write access to organization administration and organization secrets
+- *Repository permissions:* -- Read and Write access to organization administration and organization secrets
 
-If you are a GitHub Admin and want to write Organization secrets (the highest level), you'll also need:
+If you are a GitHub Admin (Owner) and want to write Organization secrets (e.g. the highest level), the PAT will also need:
 
-*Organization permissions* -- Read and Write access to administration, environments, and secrets
-
+- *Organization permissions:* -- Read and Write access to administration, environments, and secrets
