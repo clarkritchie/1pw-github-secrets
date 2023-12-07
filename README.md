@@ -1,12 +1,20 @@
 # Set GitHub Secrets
 
-This is a command line tool for use in setting secrets in GitHub from a "source of truth" .env file in 1Password.
+This is a command line tool -- a bash script that wraps a Python script -- which is to be used to set secrets in GitHub.
 
 It can be used to set:
 
-- Environment secrets
-- Repository secrets
-- Oregnization secrets
+- Environment secrets -- e.g. `dev`, `staging` or `prod`, which are environments within a repo
+- Repository secrets -- repo level secrets are available to any environment
+- Oregnization secrets -- org level secrets are available to any repo
+
+The "source of truth" for these secrets are Secure Notes in the `set-github-secrets` vault in 1Password.
+
+The basic workflow is:
+- A bash script runs everything, and is used todetermine what secrets to pull down and where to push them
+- The bash script uses the 1Password command line tools to interface with the 1Password client
+- Secure notes are exported to a `.env` file in a simple `foo=bar` format
+- A Python script reads these files and pushes them up to GitHub
 
 ## Pre-Requisites
 
@@ -84,17 +92,17 @@ If successful, that file is then passed to `main.py` which sets the values in Gi
 
 ## Caveats
 
-Caveat 1 -- Error handling (if any) is likely poor.  In the example above, how graceful this handles things if, for example, the secure note `ado_api_dev` does not exist in 1Password, or if the user lacks permissions to access that vault, etc.
+Caveat 1 -- Error handling (if any) is likely poor.  In the example above, expect there to be generally poor error handling.  For example, the case where a secure note maybe does not exist in 1Password, that will probably result in some big error.  Or if the user lacks permissions to access that vault, the GitHub repo, etc.  If the note is formatted as `foo: bar` instead of `foo=bar`, and so on.
 
-Caveat 2 -- Secrets are written or or updated, but they are not removed.
+Caveat 2 -- Secrets are written and updated, but they are not removed.
 
-e.g. if you set:
+For example, if you were to set:
 ```
 FOO=foo
 BAR=bar
 ```
 
-Then you set:
+Then later, you decide to set:
 ```
 FOO=bar
 COW=cow
@@ -109,4 +117,32 @@ COW=cow
 
 To workaround this, just fully delete an environment in GitHub then re-create it from scratch.
 
-Caveat 3 -- Long strings, JSON, YAML, SSL certificats, things with carriage returns, etc. should be Base64 encoded.
+## Problems
+
+Long strings, JSON, YAML, SSL certificats, things with carriage returns, etc. should be Base64 encoded when they are set in 1Password.
+
+Please use the `_B64` suffix!
+
+For example, this is a private key, which has `\n` characters.  It is not valid when one single string.
+
+```
+-----BEGIN OPENSSH PRIVATE KEY-----
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+-----END OPENSSH PRIVATE KEY-----
+```
+
+You would:
+
+```
+cat my_key | base64
+```
+
+...which produces one big string, e.g. `LS0tLS1CRUdJTiBPUEV...` -- then set that in 1PW as `MY_KEY_B64=LS0tLS1CRUdJTiBPUEV...`.
+
+When you use the secret, just decode it, for example in a GitHub Action you would:
+
+```
+echo ${{ secrets.MY_KEY_B64 }} | base64 --decode > my_key
+```
