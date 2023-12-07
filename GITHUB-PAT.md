@@ -22,8 +22,8 @@ blueboard/yass
 
 The PAT will need:
 
-- *Repository permissions:* -- Read and Write access to organization administration and organization secrets
+- *Repository permissions:* Read and Write access to organization administration and organization secrets
 
 If you are a GitHub Admin (Owner) and want to write Organization secrets (e.g. the highest level), the PAT will also need:
 
-- *Organization permissions:* -- Read and Write access to administration, environments, and secrets
+- *Organization permissions:* Read and Write access to administration, environments, and secrets
