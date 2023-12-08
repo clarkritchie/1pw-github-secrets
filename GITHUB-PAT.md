@@ -8,9 +8,9 @@ To create your PAT:
 
 2. Click _Developer Settings_ then _Personal Access Tokens > Fine Grained Tokens_.
 
-3. Resource Owner is Blueboard.
+3. The default "Resource Owner" is yourself, change this to **Blueboard** -- i.e. you are creating a token to aceess Blueboard's GitHub account.
 
-4. If you are not a GitHub Administrator, you must enter a small form to request that a PAT be permitted.  GitHub Administrator will then have to approve it under _Blueboard > Personal access tokens > Pending requests_.
+Note that if you are not a GitHub Administrator, you must enter a small form to request that your PAT be permitted to be used.  A GitHub Administrator will then have to manually approve that request under _Blueboard > Personal access tokens > Pending requests_.
 
 5. Add the repos you need access to, e.g.
 
