@@ -162,10 +162,18 @@ if [ ! -f ${FILE} ]; then
     exit 1
 fi
 
-echo -e "\n"
+echo -e "\nThe contents of the Secure Note named ${GITHUB_REPO}_${ENVIRONMENT} are:\n"
 cat ${FILE}
 echo -e "\n"
-read -p "Push the contents (above) to GitHub ${GITHUB_REPO}/${ENVIRONMENT} now.  Are you sure?  Press Y to confirm. " -n 1 -r
+cat <<-EOT
+   _______________  ____         ____  _________    ____         ________  _______   ____ __
+  / ___/_  __/ __ \/ __ \       / __ \/ ____/   |  / __ \       /_  __/ / / /  _/ | / / //_/
+  \__ \ / / / / / / /_/ /      / /_/ / __/ / /| | / / / /        / / / /_/ // //  |/ / ,<
+ ___/ // / / /_/ / ____/      / _, _/ /___/ ___ |/ /_/ /        / / / __  // // /|  / /| |_
+/____//_/  \____/_/   (_)    /_/ |_/_____/_/  |_/_____(_)      /_/ /_/ /_/___/_/ |_/_/ |_(_)
+
+EOT
+read -p "Review the contents above.  Press Y to push these values to GitHub ${GITHUB_REPO}/${ENVIRONMENT}.  Are you sure?  " -n 1 -r
 echo ""
 
 if [[ $REPLY =~ ^[Yy]$ ]]; then
