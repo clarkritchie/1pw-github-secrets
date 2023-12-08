@@ -70,6 +70,22 @@ Examples:
 - The name of the Secure Note that contains the secrets for the prod environment of the Send application is named `send_prod`
 - The name of the Secure Note that contains the secrets Milestones API repository is named `milestones_api_repo`
 
+The command syntax to read a Secure Note from a 1Password vault is:
+
+```
+op read op://<VAULT>/<NOTE_TITLE>/notesPlain
+```
+
+For example, to read the note named `ado_api_dev` in the vault named `set-github-secrets` you would:
+
+```
+op read op://set-github-secrets/ado_api_dev/notesPlain
+```
+
+Note the use of `--out-file`, which is simply an argument for a file to save the results in, otherwise the output goes to STDOUT.
+
+- 1Password documentation:  https://developer.1password.com/docs/cli/reference/commands/read
+
 Repository
 
 ## Usage
