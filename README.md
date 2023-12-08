@@ -60,9 +60,21 @@ GITHUB_REPO_OWNER=blueboard
 ENVIRONMENT=DEV
 ```
 
+## Convention
+
+The convention that is used for the name of the Secure Note in 1Password is:  `<repo name>_<env>`.  Repository secrets use the `repo` suffix.  Organization secrets are simply named `organiation_secrets`.
+
+Examples:
+
+- The name of the Secure Note that contains the secrets for the dev environment of the Rails API is named `blueboard_dev`
+- The name of the Secure Note that contains the secrets for the prod environment of the Send application is named `send_prod`
+- The name of the Secure Note that contains the secrets Milestones API repository is named `milestones_api_repo`
+
+Repository
+
 ## Usage
 
-This project is menu driven and relies on the existance of a `.env` file in the 1Password vault named `set-github-secrets` that follows a simple convention: `[github_repo]-[env].env`.
+This project is menu driven and relies on the existance of a Secire Note -- which is functionally equivalent to a `.env` file -- in the 1Password vault named as per the simple convnetion explained above.
 
 Example usage:
 
