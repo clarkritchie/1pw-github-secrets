@@ -37,29 +37,68 @@ printf "\nSelect the GitHub repository to use, or choose organization.\n\n"
 PS3="
 Your choice: "
 
-select repo in blueboard docker_shared milestones_api ado_api survey_api yass organization quit
+options=(
+    account
+    ado_api
+    blueboard
+    docker_shared
+    gsd
+    menu
+    milestones_api
+    monofront
+    organization
+    run
+    send
+    survey_api
+    wellness
+    yass
+    quit
+)
+
+select repo in "${options[@]}";
 do
     case $repo in
+        "account")
+            export GITHUB_REPO="account"
+            break;;
+        "ado_api")
+            export GITHUB_REPO="ado_api"
+            break;;
         "blueboard")
             export GITHUB_REPO="blueboard"
             break;;
         "docker_shared")
             export GITHUB_REPO="docker_shared"
             break;;
+        "gsd")
+            export GITHUB_REPO="gsd"
+            break;;
+        "menu")
+            export GITHUB_REPO="menu"
+            break;;
         "milestones_api")
             export GITHUB_REPO="milestones_api"
             break;;
-        "ado_api")
-            export GITHUB_REPO="ado_api"
+        "monofront")
+            export GITHUB_REPO="monofront"
             break;;
         "survey_api")
             export GITHUB_REPO="survey_api"
             break;;
-        "yass")
-            export GITHUB_REPO="yass"
-            break;;
         "organization")
             export GITHUB_REPO="organization"
+            break;;
+        "run")
+            export GITHUB_REPO="run"
+            break;;
+        "send")
+            export GITHUB_REPO="send"
+            break;;
+        "wellness")
+            export GITHUB_REPO="wellness"
+            break;;
+        "yass")
+            export GITHUB_REPO="yass"
             break;;
         "quit")
             echo "Goodbye..."
@@ -70,7 +109,7 @@ do
     esac
 done
 
-printf "\nSelect the environment (dev, staging, prod) or create repository or organization secrets.\n\n"
+printf "\nSelect the scope -- i.e. environment (dev, staging, prod) or create repository or organization secrets.\n\n"
 PS3="
 Your choice: "
 
@@ -123,8 +162,12 @@ if [ ! -f ${FILE} ]; then
     exit 1
 fi
 
-read -p "Push the contents of ${FILE} to GitHub now, are you sure?  Press Y to confirm. " -n 1 -r
+echo -e "\n"
+cat ${FILE}
+echo -e "\n"
+read -p "Push the contents (above) to GitHub ${GITHUB_REPO}/${ENVIRONMENT} now.  Are you sure?  Press Y to confirm. " -n 1 -r
 echo ""
+
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     python3 -m venv venv
     source ./venv/bin/activate
