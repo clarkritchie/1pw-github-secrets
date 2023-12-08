@@ -6,17 +6,13 @@ To create your PAT:
 
 1. Go to your own GitHub settings page.
 
-2. Click Developer Settings, then Personal Access Tokens > Fine Grained Tokens.
+2. Click _Developer Settings_ then _Personal Access Tokens > Fine Grained Tokens_.
 
-<<<<<<< HEAD
-3. Create a token with access to Blueboard and whatever repos you need access to, e.g.
-=======
 3. Resource Owner is Blueboard.
 
-4. If you are not a GitHub Administrator, you must enter a form to request that a PAT be created.  Admins will then have to approve it in (Blueboard > Personal access tokens > Pending requests).
+4. If you are not a GitHub Administrator, you must enter a small form to request that a PAT be permitted.  GitHub Administrator will then have to approve it under _Blueboard > Personal access tokens > Pending requests_.
 
-Add the repos:
->>>>>>> 8734914 (more updates)
+5. Add the repos you need access to, e.g.
 
 ```
 blueboard/blueboard
@@ -28,31 +24,20 @@ blueboard/yass
 ...
 ```
 
-The PAT will need:
+Grant the token the following permissions.
 
-- *Repository permissions:* Read and Write access to organization administration and organization secrets
+### Repository Permissions
+
+- **Administration** Read and Write
+- **Environments** Read and Write
+- **Metadata** Read Only (this is a default)
+- **Secrets** Read and Write
 
 If you are a GitHub Admin (Owner) and want to write Organization secrets (e.g. the highest level), the PAT will also need:
-*Repository permissions*
-- Administration, read and write
-- Environmenbt,s read and write
-Metadata, read only (this isa default)
-- Secrets Read and wrute
 
-If you are a GitHib Administrator, you will also need:
+### Organization Permissions
 
-*Organization permissions*
+- **Administration** Read and Write
+- **Secrets** Read and Write
 
-- Administration, read and write
-- Secrets, read and write
-
-Click Generate new token.
-
-
-Read and Write access to organization administration and organization secrets
-
-If you are a GitHub Admin and want to write Organization secrets (the highest level), you'll also need:
-
-
-
-- *Organization permissions:* Read and Write access to administration, environments, and secrets
+Click Generate new token.  Again, if you are not a GitHub Administrator, an admin must approve the token before it can be used.
