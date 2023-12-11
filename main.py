@@ -117,7 +117,7 @@ elif ENVIRONMENT in ["dev","staging","prod"]:
                 api.actions.create_or_update_environment_secret(repoId, ENVIRONMENT, key, encrypted_value, public_key.key_id)
                 logger.info(f'Successfully added environment secret {key} for {ENVIRONMENT} in repo {GITHUB_REPO}')
             except Exception as e:
-                logger.error(f'There was a problem with {key} for {ENVIRONMENT}')
+                logger.error(f'There was a problem with {key} for {ENVIRONMENT} in repo {GITHUB_REPO}')
                 print(f"An error occurred: {str(e)}")
                 sys.exit(1)
 #

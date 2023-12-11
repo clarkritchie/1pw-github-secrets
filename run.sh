@@ -152,6 +152,7 @@ trap 'rm -f ${FILE}' EXIT
 #   op read op://set-github-secrets/ado_api_dev/notesPlain
 #
 # 1PW docs:  https://developer.1password.com/docs/cli/reference/commands/read
+# Lots of stuff!  https://1password.community/discussion/91068/cli-secure-note-utilities-written-in-python
 #
 # TODO come up with a naming convention here, names must be unique in a vault
 # Since we're making a temp file, --force is here only to suppress the op lient from warning us that

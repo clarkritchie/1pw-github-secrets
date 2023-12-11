@@ -2,3 +2,4 @@
 /venv
 **.bak
 token.sh
+**/.DS_Store
