@@ -38,69 +38,69 @@ PS3="
 Your choice: "
 
 options=(
-    account
-    ado_api
-    blueboard
-    docker_shared
-    gsd
-    menu
-    milestones_api
-    monofront
-    organization
-    run
-    send
-    survey_api
-    wellness
-    yass
-    quit
+    "Account"
+    "ADO API"
+    "Blueboard (Rails API)"
+    "Docker Shared"
+    "GSD"
+    "Menu"
+    "Milestones API"
+    "Monofront"
+    "Organization"
+    "Run"
+    "Send"
+    "Survey"
+    "Wellness"
+    "YASS"
+    "Quit"
 )
 
 select repo in "${options[@]}";
 do
     case $repo in
-        "account")
+        "Account")
             export GITHUB_REPO="account"
             break;;
-        "ado_api")
+        "ADO")
             export GITHUB_REPO="ado_api"
             break;;
-        "blueboard")
+        "Blueboard (Rails API)")
             export GITHUB_REPO="blueboard"
             break;;
-        "docker_shared")
+        "Docker Shared")
             export GITHUB_REPO="docker_shared"
             break;;
-        "gsd")
+        "GSD")
             export GITHUB_REPO="gsd"
             break;;
-        "menu")
+        "Menu")
             export GITHUB_REPO="menu"
             break;;
-        "milestones_api")
+        "Milestones API")
             export GITHUB_REPO="milestones_api"
             break;;
-        "monofront")
+        "Monofront")
             export GITHUB_REPO="monofront"
             break;;
-        "survey_api")
+        "Survey API")
             export GITHUB_REPO="survey_api"
             break;;
-        "organization")
+        "Organization")
             export GITHUB_REPO="organization"
             break;;
-        "run")
+        "Run")
             export GITHUB_REPO="run"
             break;;
-        "send")
+        "Send")
             export GITHUB_REPO="send"
             break;;
-        "wellness")
+        "Wellness")
             export GITHUB_REPO="wellness"
             break;;
-        "yass")
+        "YASS")
             export GITHUB_REPO="yass"
             break;;
-        "quit")
+        "Quit")
             echo "Goodbye..."
             exit 0
             break;;
