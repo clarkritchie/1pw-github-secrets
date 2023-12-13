@@ -163,6 +163,11 @@ if [ ! -f ${FILE} ]; then
     exit 1
 fi
 
+# sort the list
+FILE2=$(tempfile)
+trap 'rm -f ${FILE2}' EXIT
+sort ${FILE} --output ${FILE2} && mv ${FILE2} ${FILE}
+
 echo -e "\nThe contents of the Secure Note named ${GITHUB_REPO}_${ENVIRONMENT} are:\n"
 cat ${FILE}
 echo -e "\n"
