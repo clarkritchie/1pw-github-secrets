@@ -1,5 +1,12 @@
 # Set GitHub Secrets
 
+## GitHub
+
+This functionality now available as a GitHub Action (in this repo) -- it can be used to set repository or environment secrets!  Use the other way (below) to set
+organization secrets.
+
+## Command Line
+
 This is a command line tool -- a bash script that wraps a Python script -- which is to be used to set secrets in GitHub.
 
 It can be used to set:
