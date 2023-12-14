@@ -2,7 +2,7 @@
 
 There are 2 ways to use this project -- either as a GitHub Action or command line tool.
 
-## Conventions Used
+## Conventions Used, Important!
 
 The convention that is used for the name of the Secure Note in 1Password is:  `<repo name>_<env>`.  Repository secrets use the `repo` suffix.  Organization secrets are simply named `organiation_secrets`.
 
@@ -37,7 +37,7 @@ It can be used to set:
 The "source of truth" for these secrets are Secure Notes in the `set-github-secrets` vault in 1Password.
 
 The basic workflow is:
-- A bash script runs everything, and is used todetermine what secrets to pull down and where to push them
+- A bash script runs everything, and is used to determine what secrets to pull down and where to push them
 - The bash script uses the 1Password command line tools to interface with the 1Password client
 - Secure notes are exported to a `.env` file in a simple `foo=bar` format
 - A Python script reads these files and pushes them up to GitHub
