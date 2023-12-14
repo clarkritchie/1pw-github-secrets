@@ -7,12 +7,15 @@ tempfile() {
     mktemp /tmp/${tempprefix}.XXXXXX
 }
 
+# default is to echo the data to the console
+ECHO=${1:-echo}
+
 if [[ ! -f /opt/homebrew/bin/op || ! -f git.env ]]; then
     cat <<-EOT
 
 1PW CLI line tools not found or git.env not in the current directory
 
-See README.md for setup instructions.
+See README.md for instructions.
 
 EOT
     exit 1
@@ -168,9 +171,12 @@ FILE2=$(mktemp)
 trap 'rm -f ${FILE2}' EXIT
 sort ${FILE} --output ${FILE2} && mv ${FILE2} ${FILE}
 
-echo -e "\nThe contents of the Secure Note named ${GITHUB_REPO}_${ENVIRONMENT} are:\n"
-cat ${FILE}
-echo -e "\n"
+if [[ ${ECHO} == "echo" ]]; then
+    echo -e "\nThe contents of the Secure Note named ${GITHUB_REPO}_${ENVIRONMENT} are:\n"
+    cat ${FILE}
+    echo -e "\n"
+fi
+
 cat <<-EOT
    _______________  ____         ____  _________    ____         ________  _______   ____ __
   / ___/_  __/ __ \/ __ \       / __ \/ ____/   |  / __ \       /_  __/ / / /  _/ | / / //_/
