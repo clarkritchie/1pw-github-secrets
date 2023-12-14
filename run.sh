@@ -139,7 +139,7 @@ do
 done
 
 # create a temporary file to save the contents from 1PW
-FILE=$(tempfile)
+FILE=$(mktemp)
 trap 'rm -f ${FILE}' EXIT
 
 # Read the 1PW secure note into a temporary file
@@ -164,7 +164,7 @@ if [ ! -f ${FILE} ]; then
 fi
 
 # sort the list
-FILE2=$(tempfile)
+FILE2=$(mktemp)
 trap 'rm -f ${FILE2}' EXIT
 sort ${FILE} --output ${FILE2} && mv ${FILE2} ${FILE}
 
