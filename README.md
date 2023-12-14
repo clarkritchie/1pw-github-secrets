@@ -1,13 +1,21 @@
 # Set GitHub Secrets
 
-## GitHub
+There are 2 ways to use this project.
 
-This functionality now available as a GitHub Action (in this repo) -- it can be used to set repository or environment secrets!  Use the other way (below) to set
-organization secrets.
+## GitHub Action
+
+The functionality in this project is now available as a GitHub Action!  It can be used to set environment and repository secrets.  **It does not have permission to set Organization secrets.**
+
+The GHA:
+
+- Uses a service account to interact with 1Password
+- Uses BlueboardBot's Personal Access Token for GitHub, that user is an admin on relevant repos, and the token has permissions to create environments and write secrets
+
+(Both of these tokens are set as Organization secrets.)
 
 ## Command Line
 
-This is a command line tool -- a bash script that wraps a Python script -- which is to be used to set secrets in GitHub.
+This is a command line tool -- a bash script that calls a Python script -- which is to be used to set secrets in GitHub.  It evolved over time to meet Blueboard's needs.
 
 It can be used to set:
 
@@ -102,23 +110,61 @@ This project is menu driven and relies on the existance of a Secire Note -- whic
 Example usage:
 
 ```
-❯ ./run.sh                                                                                                                         1pw_env
+❯ ./run.sh                                                                             ✔  20s  14:22:41
+This script retrieves env vars from 1PW notes and creates them as GitHub secrets.
 
-Remember, some env vars are may be problematic as they are known to contain JSON or XML, may
-contain line breaks or have other special spacing requirements, such as certificates.
+This workflow DOES NOT remove old values from GitHub!  That is important.
 
-These should be base64 encoded.
+1PW is our source of truth.
 
-See also the array VARS_TO_SKIP in main.py
+Some env vars are can be problematic -- specifically if they contain JSON, XML, have
+line breaks, are certificates, and/or just have other special characters. The best
+workaround here is to simply Base64 encode the values before you upload them to
+GitHub.  Please name these with a _B64 suffix, e.g. FOO_B64.
 
-1) blueboard	   3) milestones_api  5) survey_api	 7) organization
-2) docker-shared   4) ado_api	      6) yass		 8) quit
+These can also be ignored, see the array VARS_TO_SKIP array in main.py.
 
-Select the repository to push secrets into, or choose organizaiton: 4
+Select the GitHub repository to use, or choose organization.
+
+1) Account		    9) Organization
+2) ADO API		   10) Run
+3) Blueboard (Rails API)   11) Send
+4) Docker Shared	   12) Survey
+5) GSD			   13) Wellness
+6) Menu			   14) YASS
+7) Milestones API	   15) Quit
+8) Monofront
+
+Your choice: 7
+
+Select the scope -- i.e. environment (dev, staging, prod) or create repository or organization secrets.
+
 1) dev		 3) prod	  5) organization
-2) staging	 4) repo	  6) quit
+2) staging	 4) repository	  6) quit
 
-Select the ENVIRONMENT, or create a REPOSITORY or ORGANIZATION secret: 1
+Your choice: 2
+
+The contents of the Secure Note named milestones_api_staging are:
+
+AWS_ACCESS_KEY_ID=xxx
+AWS_BUCKET_NAME=xxx
+AWS_ROLE_ARN=xxx
+AWS_SECRET_ACCESS_KEY=xxx
+FERNET_KEY=xxx
+JOB_QUEUE_HOST=xxx
+MYSQL_HOSTNAME=xxx
+MYSQL_PASSWORD=xxx
+RAILS_API=xxx
+SECRET_KEY=xxx
+
+
+   _______________  ____         ____  _________    ____         ________  _______   ____ __
+  / ___/_  __/ __ \/ __ \       / __ \/ ____/   |  / __ \       /_  __/ / / /  _/ | / / //_/
+  \__ \ / / / / / / /_/ /      / /_/ / __/ / /| | / / / /        / / / /_/ // //  |/ / ,<
+ ___/ // / / /_/ / ____/      / _, _/ /___/ ___ |/ /_/ /        / / / __  // // /|  / /| |_
+/____//_/  \____/_/   (_)    /_/ |_/_____/_/  |_/_____(_)      /_/ /_/ /_/___/_/ |_/_/ |_(_)
+
+Review the contents above.  Press Y to push these values to GitHub milestones_api/staging.  Are you sure?  y
 ```
 
 In this example, by selecting option 4 (`ado_api`) then option 1 (`dev`), the script will try to fetch a secure note from the `set-github-secrets` vault in 1PW named in 1PW `ado_api_dev`.
@@ -152,13 +198,13 @@ COW=cow
 
 To workaround this, just fully delete an environment in GitHub then re-create it from scratch.
 
-## Problems
+## Edge Cases To Be Aware Of
 
-Long strings, JSON, YAML, SSL certificats, things with carriage returns, etc. should be Base64 encoded when they are set in 1Password.
+Long strings, JSON, YAML, SSL certificats, things with carriage returns (`\n` or `\r`), etc. should be Base64 encoded when they are set in 1Password.
 
 Please use the `_B64` suffix!
 
-For example, this is a private key, which has `\n` characters.  It is not valid when one single string.
+For example, a private key looks like this, which has `\n` characters on each line.  It is **not valid** when it is one single string.
 
 ```
 -----BEGIN OPENSSH PRIVATE KEY-----
@@ -180,4 +226,49 @@ When you use the secret, just decode it, for example in a GitHub Action you woul
 
 ```
 echo ${{ secrets.MY_KEY_B64 }} | base64 --decode > my_key
+```
+
+Note that in YAML, you may need to add leading spaces to make it format right.
+
+```
+foo:
+  bar:
+    moo: |
+      ${MOO}
+```
+
+The value of MOO might need to be like this **before you Base 64 encode it**.  Note there are 6 leading spaces so that it aligns with the YAML template above.
+
+```
+      -----BEGIN OPENSSH PRIVATE KEY-----
+      xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+      xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+      xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+      -----END OPENSSH PRIVATE KEY-----
+```
+
+We do this so that the YAML Ends up like this.  This is valid YAML:
+
+```
+foo:
+  bar:
+    moo: |
+      -----BEGIN OPENSSH PRIVATE KEY-----
+      xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+      xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+      xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+      -----END OPENSSH PRIVATE KEY-----
+```
+
+This is invalid YAML:
+
+```
+foo:
+  bar:
+    moo: |
+-----BEGIN OPENSSH PRIVATE KEY-----
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+-----END OPENSSH PRIVATE KEY-----
 ```
