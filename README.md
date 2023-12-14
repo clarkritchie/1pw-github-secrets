@@ -271,6 +271,12 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 -----END OPENSSH PRIVATE KEY-----
 ```
 
+## Multiline YAML
+
+See link for the various ways to do multi-line values in YAML.
+
+- https://stackoverflow.com/questions/3790454/how-do-i-break-a-string-in-yaml-over-multiple-lines
+  
 ## If You Screw Up
 
 If you meess up or just want to start over, you can always fully **delete** an environment in GitHub, the script will re-create it.
