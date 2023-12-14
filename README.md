@@ -100,8 +100,6 @@ Note the use of `--out-file`, which is simply an argument for a file to save the
 
 - 1Password documentation:  https://developer.1password.com/docs/cli/reference/commands/read
 
-Repository
-
 ### Usage
 
 This project is menu driven and relies on the existance of a Secire Note -- which is functionally equivalent to a `.env` file -- in the 1Password vault named as per the simple convnetion explained above.
