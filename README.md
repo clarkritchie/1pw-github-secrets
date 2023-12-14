@@ -54,7 +54,7 @@ The following assumes that you have 1Password installed and access to the `set-g
 brew install 1password-cli
 ```
 
-2. Turn on the 1Password desktop app integration
+2. Turn on the 1Password desktop app integration in the 1Password desktop application.
 
 - Open and unlock the 1Password app.
 - Click your account or collection at the top of the sidebar.
@@ -64,7 +64,7 @@ brew install 1password-cli
 
 3. Verify
 
-This command should return something:
+Go to your shell -- this command should return something:
 
 ```
 op vault list
@@ -76,14 +76,15 @@ For more information or help:
 
 #### Create a GitHub Personal Access Token (PAT)
 
-1. How to create a [GitHub Personal Access Token (PAT)](GITHUB-PAT.md)
+1. Steps on how to create a [GitHub Personal Access Token (PAT)](GITHUB-PAT.md).
 
-2. Create a `git.env` file at the root of this project.  **This file should not be comitted to GitHub** (It should already be excluded by the `.gitignore`.)
+2. Create a `git.env` file at the root of this project.  **This file should not be comitted to GitHub!!!** (It should already be excluded by the `.gitignore`.)
 
 ```
 GITHUB_ACCESS_TOKEN=github_pat_XXX
 GITHUB_REPO_OWNER=blueboard
 ```
+
 The command syntax to read a Secure Note from a 1Password vault is:
 
 ```
@@ -96,7 +97,7 @@ For example, to read the note named `ado_api_dev` in the vault named `set-github
 op read op://set-github-secrets/ado_api_dev/notesPlain
 ```
 
-Note the use of `--out-file`, which is simply an argument for a file to save the results in, otherwise the output goes to STDOUT.
+Note the use of `--out-file` in `runs.sh`, which is simply an argument for a file to save the results in, otherwise the output goes to STDOUT.
 
 - 1Password documentation:  https://developer.1password.com/docs/cli/reference/commands/read
 
@@ -107,7 +108,7 @@ This project is menu driven and relies on the existance of a Secire Note -- whic
 Example usage:
 
 ```
-❯ ./run.sh                                                                             ✔  20s  14:22:41
+❯ ./run.sh
 This script retrieves env vars from 1PW notes and creates them as GitHub secrets.
 
 This workflow DOES NOT remove old values from GitHub!  That is important.
