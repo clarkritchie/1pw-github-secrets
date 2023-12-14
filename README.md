@@ -1,8 +1,19 @@
 # Set GitHub Secrets
 
-There are 2 ways to use this project.
+There are 2 ways to use this project.  See below.
 
-## GitHub Action
+## Conventions Used
+
+The convention that is used for the name of the Secure Note in 1Password is:  `<repo name>_<env>`.  Repository secrets use the `repo` suffix.  Organization secrets are simply named `organiation_secrets`.
+
+Examples:
+
+- The name of the Secure Note that contains the secrets for the dev environment of the Rails API is named `blueboard_dev`
+- The name of the Secure Note that contains the secrets for the prod environment of the Send application is named `send_prod`
+- The name of the Secure Note that contains the secrets Milestones API repository is named `milestones_api_repo`
+
+
+## Use 1 - GitHub Action
 
 The functionality in this project is now available as a GitHub Action!  It can be used to set environment and repository secrets.  **It does not have permission to set Organization secrets.**
 
@@ -13,7 +24,7 @@ The GHA:
 
 (Both of these tokens are set as Organization secrets.)
 
-## Command Line
+## Use 2 - Command Line
 
 This is a command line tool -- a bash script that calls a Python script -- which is to be used to set secrets in GitHub.  It evolved over time to meet Blueboard's needs.
 
@@ -31,9 +42,9 @@ The basic workflow is:
 - Secure notes are exported to a `.env` file in a simple `foo=bar` format
 - A Python script reads these files and pushes them up to GitHub
 
-## Pre-Requisites
+### Pre-Requisites
 
-### Install 1Password Command Line Tools
+#### Install 1Password Command Line Tools
 
 The following assumes that you have 1Password installed and access to the `set-github-secrets` vault.
 
@@ -63,28 +74,16 @@ For more information or help:
 
 - https://developer.1password.com/docs/cli/get-started
 
-### GitHub PAT
+#### Create a GitHub Personal Access Token (PAT)
 
-1. Create a [GitHub Personal Access Token (PAT)](GITHUB-PAT.md)
+1. How to create a [GitHub Personal Access Token (PAT)](GITHUB-PAT.md)
 
 2. Create a `git.env` file at the root of this project.  **This file should not be comitted to GitHub** (It should already be excluded by the `.gitignore`.)
 
 ```
 GITHUB_ACCESS_TOKEN=github_pat_XXX
 GITHUB_REPO_OWNER=blueboard
-ENVIRONMENT=DEV
 ```
-
-## Convention
-
-The convention that is used for the name of the Secure Note in 1Password is:  `<repo name>_<env>`.  Repository secrets use the `repo` suffix.  Organization secrets are simply named `organiation_secrets`.
-
-Examples:
-
-- The name of the Secure Note that contains the secrets for the dev environment of the Rails API is named `blueboard_dev`
-- The name of the Secure Note that contains the secrets for the prod environment of the Send application is named `send_prod`
-- The name of the Secure Note that contains the secrets Milestones API repository is named `milestones_api_repo`
-
 The command syntax to read a Secure Note from a 1Password vault is:
 
 ```
