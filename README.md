@@ -1,6 +1,6 @@
 # Set GitHub Secrets
 
-There are 2 ways to use this project.  See below.
+There are 2 ways to use this project -- either as a GitHub Action or command line tool.
 
 ## Conventions Used
 
@@ -13,7 +13,7 @@ Examples:
 - The name of the Secure Note that contains the secrets Milestones API repository is named `milestones_api_repo`
 
 
-## Use 1 - GitHub Action
+## Usage 1 - GitHub Action
 
 The functionality in this project is now available as a GitHub Action!  It can be used to set environment and repository secrets.  **It does not have permission to set Organization secrets.**
 
@@ -24,7 +24,7 @@ The GHA:
 
 (Both of these tokens are set as Organization secrets.)
 
-## Use 2 - Command Line
+## Usage 2 - Command Line
 
 This is a command line tool -- a bash script that calls a Python script -- which is to be used to set secrets in GitHub.  It evolved over time to meet Blueboard's needs.
 
@@ -102,7 +102,7 @@ Note the use of `--out-file`, which is simply an argument for a file to save the
 
 Repository
 
-## Usage
+### Usage
 
 This project is menu driven and relies on the existance of a Secire Note -- which is functionally equivalent to a `.env` file -- in the 1Password vault named as per the simple convnetion explained above.
 
