@@ -270,3 +270,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 -----END OPENSSH PRIVATE KEY-----
 ```
+
+## If You Screw Up
+
+If you meess up or just want to start over, you can always fully **delete** an environment in GitHub, the script will re-create it.
