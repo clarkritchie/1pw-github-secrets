@@ -192,5 +192,5 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     python3 -m venv venv
     source ./venv/bin/activate
     pip3 install -r requirements.txt
-    ENVIRONMENT=${ENVIRONMENT} GITHUB_REPO=${GITHUB_REPO} ENV_FILE=${FILE} python3 main.py
+    ENVIRONMENT=${ENVIRONMENT} GITHUB_REPO=${GITHUB_REPO} ENV_FILE=${FILE} python3 -u main.py
 fi

@@ -55,11 +55,11 @@ def get_env_data_as_dict(path: str) -> dict:
                 key_value_dict[key] = value
         return key_value_dict
 
-print(f"ENV_FILE is {ENV_FILE}")
+logger.info(f'Using ENV_FILE: {ENV_FILE}')
 env_data = get_env_data_as_dict(ENV_FILE)
 
-logger.info(f'Keys and values from file:')
-print(dumps(env_data, indent=4))
+# logger.info(f'Keys and values from file:')
+# print(dumps(env_data, indent=4))
 
 #
 # Repository Secrets
@@ -102,7 +102,7 @@ elif ENVIRONMENT in ["dev","staging","prod"]:
         if key in VARS_TO_SKIP:
             logger.info(f'{key} is in list of variables to skip, ignoring...')
         else:
-            print(f'loading key is {key}')
+            # print(f'loading value... key is {key}')
             # TODO this may be problematic, remove the leading or trailing ' or ""
             value = value.replace("'","")
             encrypted_value=encrypt(public_key.key,value)
