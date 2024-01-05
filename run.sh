@@ -112,11 +112,11 @@ do
     esac
 done
 
-printf "\nSelect the scope -- i.e. environment (dev, staging, prod) or create repository or organization secrets.\n\n"
+printf "\nSelect the scope -- i.e. environment (dev, staging, prod, chaos) or create repository or organization secrets.\n\n"
 PS3="
 Your choice: "
 
-select env in dev staging prod repository organization quit
+select env in dev staging prod repository organization chaos quit
 do
     case $env in
         "prod")
@@ -130,6 +130,9 @@ do
             break;;
         "organization")
             export ENVIRONMENT="secrets"
+            break;;
+        "chaos")
+            export ENVIRONMENT="chaos"
             break;;
         "quit")
             echo "Goodbye..."
@@ -152,7 +155,7 @@ trap 'rm -f ${FILE}' EXIT
 #   op read op://<VAULT>/<NOTE_TITLE>/notesPlain
 #
 # e.g.
-#   op read op://set-github-secrets/ado_api_dev/notesPlain
+#   op read op://set_github_secrets/ado_api_dev/notesPlain
 #
 # 1PW docs:  https://developer.1password.com/docs/cli/reference/commands/read
 # Lots of stuff!  https://1password.community/discussion/91068/cli-secure-note-utilities-written-in-python
@@ -160,7 +163,7 @@ trap 'rm -f ${FILE}' EXIT
 # TODO come up with a naming convention here, names must be unique in a vault
 # Since we're making a temp file, --force is here only to suppress the op lient from warning us that
 # the file already exists
-op read --out-file ${FILE} --force "op://set-github-secrets/${GITHUB_REPO}_${ENVIRONMENT}/notesPlain" > /dev/null
+op read --out-file ${FILE} --force "op://set_github_secrets/${GITHUB_REPO}_${ENVIRONMENT}/notesPlain" > /dev/null
 if [ ! -f ${FILE} ]; then
     echo "There was a problem, the environment file \"${FILE}\" was not created!"
     exit 1
@@ -192,5 +195,6 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     python3 -m venv venv
     source ./venv/bin/activate
     pip3 install -r requirements.txt
+    # echo ENVIRONMENT=${ENVIRONMENT} GITHUB_REPO=${GITHUB_REPO} ENV_FILE=${FILE}
     ENVIRONMENT=${ENVIRONMENT} GITHUB_REPO=${GITHUB_REPO} ENV_FILE=${FILE} python3 -u main.py
 fi

@@ -89,7 +89,7 @@ if ENVIRONMENT == "repo":
 #
 # Environment Secrets
 #
-elif ENVIRONMENT in ["dev","staging","prod"]:
+elif ENVIRONMENT in ["dev","staging","prod","chaos"]:
     logger.info(f'Fetching repository information for {GITHUB_REPO}')
     repoId = api.repos.get().id
     # logger.info(f'Creating/Updating new environment {ENVIRONMENT}')
