@@ -1,17 +1,23 @@
 # Set GitHub Secrets
 
-There are 2 ways to use this project -- either as a GitHub Action or command line tool.
+This project is a small Python script that reads secrets from 1Password, and pushes them into GitHub as either a) environment secrets within a project, b) repoistory secrets, or c) organization secrets.
 
-## Conventions Used, Important!
+There are 2 ways to use this project, either as a GitHub Action or as a command line tool.
 
-The convention that is used for the name of the Secure Note in 1Password is:  `<repo name>_<env>`.  Repository secrets use the `repo` suffix.  Organization secrets are simply named `organiation_secrets`.
+For everything except organization secrets, you should use the GitHub Action.  That action uses a PAT (for the BlueboardBot GitHub user) to authenticate with GitHub and requires no setup on your localhost.
+
+However, that Personal Access Token (PAT) does not have permission to set organization secrets, so for those, you must be a GitHub Administrator and run this from your localhost.  Note that additional setup is required.  You must have a PAT for youself and intall the 1Passowrd command line tools on your localhost.
+
+## Conventions Used, Important!  Must read!
+
+The following naming convention is used, which is:  the name of the Secure Note in 1Password as `<repo name>_<env>`.  Repository secrets use the `repo` suffix.  Organization secrets are simply named `organiation_secrets`.
 
 Examples:
 
-- The name of the Secure Note that contains the secrets for the dev environment of the Rails API is named `blueboard_dev`
-- The name of the Secure Note that contains the secrets for the prod environment of the Send application is named `send_prod`
+- The name of the Secure Note that contains the secrets for the `dev` environment of the Rails API (GitHub project is `blueboard`) is named `blueboard_dev`
+- The name of the Secure Note that contains the secrets for the `prod` environment of the Send application (GitHub project is `send`) is named `send_prod`
 - The name of the Secure Note that contains the secrets Milestones API repository is named `milestones_api_repo`
-
+- The name of the Secure Note that contains organization secrets is named simply `organization_secrets`
 
 ## Usage 1 - GitHub Action
 
@@ -19,10 +25,10 @@ The functionality in this project is now available as a GitHub Action!  It can b
 
 The GHA:
 
-- Uses a service account to interact with 1Password
-- Uses BlueboardBot's Personal Access Token for GitHub, that user is an admin on relevant repos, and the token has permissions to create environments and write secrets
+- Uses a service account (`BlueboardBot`) to interact with 1Password
+- Uses BlueboardBot's PAT for GitHub, that user is an admin on relevant repos, and the token has permissions to create environments and write secrets
 
-(Both of these tokens are set as Organization secrets.)
+BlueboardBot's tokens are set as Organization secrets.
 
 ## Usage 2 - Command Line
 
@@ -74,9 +80,9 @@ For more information or help:
 
 - https://developer.1password.com/docs/cli/get-started
 
-#### Create a GitHub Personal Access Token (PAT)
+#### Create a GitHub PAT (PAT)
 
-1. Steps on how to create a [GitHub Personal Access Token (PAT)](GITHUB-PAT.md).
+1. Steps on how to create a [GitHub PAT (PAT)](GITHUB-PAT.md).
 
 2. Create a `git.env` file at the root of this project.  **This file should not be comitted to GitHub!!!** (It should already be excluded by the `.gitignore`.)
 
@@ -276,7 +282,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 See link for the various ways to do multi-line values in YAML.
 
 - https://stackoverflow.com/questions/3790454/how-do-i-break-a-string-in-yaml-over-multiple-lines
-  
+
 ## If You Screw Up
 
 If you meess up or just want to start over, you can always fully **delete** an environment in GitHub, the script will re-create it.
