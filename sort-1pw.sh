@@ -9,7 +9,7 @@
 #
 
 NOTE_TITLE=${1}
-VAULT="set-github-secrets"
+VAULT="set_github_secrets"
 
 if [ -z ${NOTE_TITLE} ]; then
     cat <<-EOT
