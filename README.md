@@ -2,6 +2,8 @@
 
 This project is a small Python script that reads secrets from 1Password, and pushes them into GitHub as either a) environment secrets within a project, b) repoistory secrets, or c) organization secrets.
 
+It was originally forked from an article I found on [Medium](git@github.com:n3rdkid/medium-github-secrets.git), but was later customized for my needs.
+
 There are 2 ways to use this project, either as a GitHub Action or as a command line tool.
 
 For everything except organization secrets, you should use the GitHub Action.  That action uses a PAT (for the BlueboardBot GitHub user) to authenticate with GitHub and requires no setup on your localhost.
